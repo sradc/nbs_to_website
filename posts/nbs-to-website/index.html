@@ -3,6 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test page</title>
     <link rel="stylesheet" href="../../stylesheet.css">
     <script src="../../script.js"></script>
@@ -36,6 +37,7 @@ MathJax.Hub.Config({
 There's already tools for this.
 However, I thought it would be fun if the site was generated from one of its own notebooks. 
 This is that notebook.</p>
+<p>This is still a work in progress, (missing features + needs some tidying up).</p>
 <p>Some things this notebook does:
 - Read the Jupyter Notebook (it's json data, so easy to load).
 - Get the text content of markdown/code cells.
@@ -59,12 +61,12 @@ This is that notebook.</p>
 <span class="n">html_formatter</span> <span class="o">=</span> <span class="n">pygments</span><span class="o">.</span><span class="n">formatters</span><span class="o">.</span><span class="n">HtmlFormatter</span><span class="p">(</span><span class="n">linenos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">nb_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>  <span class="c1"># Running as a script</span>
+    <span class="n">nb_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>  <span class="c1"># if running as a script</span>
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-    <span class="n">nb_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>  <span class="c1"># Running as a Jupyter Notebook</span>
+    <span class="n">nb_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>  <span class="c1"># if running as a Jupyter Notebook</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">nb_dir</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
 
-<span class="n">WEBSITE_DIR</span> <span class="o">=</span> <span class="n">nb_dir</span><span class="o">.</span><span class="n">parent</span>  <span class="c1"># where we put this website</span>
+<span class="n">WEBSITE_DIR</span> <span class="o">=</span> <span class="n">nb_dir</span><span class="o">.</span><span class="n">parent</span>  <span class="c1"># generated content goes here</span>
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>/Users/sidneyradcliffe/repos/nbs-to-website/_notebooks
 </pre></div>
@@ -262,20 +264,6 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;script.js&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">console.log(&quot;hi from my script&quot;)</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
-
-<span class="p">(</span><span class="n">mkdir</span><span class="p">(</span><span class="n">posts</span> <span class="o">/</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">&lt;!DOCTYPE html&gt;</span>
-<span class="s2">&lt;html lang=&quot;en&quot;&gt;</span>
-<span class="s2">  &lt;head&gt;</span>
-<span class="s2">    &lt;meta charset=&quot;utf-8&quot;&gt;</span>
-<span class="s2">    &lt;title&gt;Test page&lt;/title&gt;</span>
-<span class="s2">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/stylesheet.css&quot;&gt;</span>
-<span class="s2">  &lt;/head&gt;</span>
-<span class="s2">  &lt;body&gt;</span>
-<span class="s2">    &lt;h1&gt;Test page&lt;/h1&gt;</span>
-<span class="s2">  &lt;/body&gt;</span>
-<span class="s2">&lt;/html&gt;</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">notebook</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">nb_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">))):</span>
@@ -285,6 +273,7 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">&lt;html lang=&quot;en&quot;&gt;</span>
 <span class="s2">  &lt;head&gt;</span>
 <span class="s2">    &lt;meta charset=&quot;utf-8&quot;&gt;</span>
+<span class="s2">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span>
 <span class="s2">    &lt;title&gt;Test page&lt;/title&gt;</span>
 <span class="s2">    &lt;link rel=&quot;stylesheet&quot; href=&quot;../../stylesheet.css&quot;&gt;</span>
 <span class="s2">    &lt;script src=&quot;../../script.js&quot;&gt;&lt;/script&gt;</span>
@@ -304,6 +293,7 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">&lt;html lang=&quot;en&quot;&gt;</span>
 <span class="s2">  &lt;head&gt;</span>
 <span class="s2">    &lt;meta charset=&quot;utf-8&quot;&gt;</span>
+<span class="s2">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span>
 <span class="s2">    &lt;title&gt;sid&#39;s site&lt;/title&gt;</span>
 <span class="s2">    &lt;link rel=&quot;stylesheet&quot; href=&quot;./stylesheet.css&quot;&gt;</span>
 <span class="s2">    &lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;</span>
@@ -316,7 +306,7 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">&lt;/html&gt;</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 </pre></div>
-</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 107.13it/s]
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 140.40it/s]
 </pre></div>
 </div></div></div></div>
   </body>

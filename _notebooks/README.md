@@ -17,4 +17,5 @@ Would be nice:
 - Picking a nice font
 - Moving images from base64 into their own img files, filename based on hash, for browser caching.
 - Converting historic posts into this format.
+- Post commit git hook that runs the website generator.
 ```
