@@ -18,4 +18,5 @@ Would be nice:
 - Moving images from base64 into their own img files, filename based on hash, for browser caching.
 - Converting historic posts into this format.
 - Post commit git hook that runs the website generator.
+- Use system fonts, e.g. https://meta.stackexchange.com/questions/364048/we-are-switching-to-system-fonts-on-may-10-2021
 ```
