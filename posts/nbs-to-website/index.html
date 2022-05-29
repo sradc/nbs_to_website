@@ -4,8 +4,8 @@
   <head>
     <meta charset="utf-8">
     <title>Test page</title>
-    <link rel="stylesheet" href="/stylesheet.css">
-    <script src="/script.js"></script>
+    <link rel="stylesheet" href="../../stylesheet.css">
+    <script src="../../script.js"></script>
     
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -66,7 +66,7 @@ This is that notebook.</p>
 
 <span class="n">WEBSITE_DIR</span> <span class="o">=</span> <span class="n">nb_dir</span><span class="o">.</span><span class="n">parent</span>  <span class="c1"># where we put this website</span>
 </pre></div>
-</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>/Users/sidneyradcliffe/repos/nb-to-website/notebooks
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>/Users/sidneyradcliffe/repos/nbs-to-website/_notebooks
 </pre></div>
 </div></div></div><div class="block"><div class="markdown"><h3>Cell parameters</h3>
 <p>Make it possible to put parameters in the Jupyter Notebook cells, that can be looked at when building the website.</p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cell_flag</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
@@ -286,8 +286,8 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">  &lt;head&gt;</span>
 <span class="s2">    &lt;meta charset=&quot;utf-8&quot;&gt;</span>
 <span class="s2">    &lt;title&gt;Test page&lt;/title&gt;</span>
-<span class="s2">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/stylesheet.css&quot;&gt;</span>
-<span class="s2">    &lt;script src=&quot;/script.js&quot;&gt;&lt;/script&gt;</span>
+<span class="s2">    &lt;link rel=&quot;stylesheet&quot; href=&quot;../../stylesheet.css&quot;&gt;</span>
+<span class="s2">    &lt;script src=&quot;../../script.js&quot;&gt;&lt;/script&gt;</span>
 <span class="s2">    </span><span class="si">{</span><span class="n">mathjax</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/head&gt;</span>
 <span class="s2">  &lt;body&gt;</span>
@@ -305,8 +305,8 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">  &lt;head&gt;</span>
 <span class="s2">    &lt;meta charset=&quot;utf-8&quot;&gt;</span>
 <span class="s2">    &lt;title&gt;sid&#39;s site&lt;/title&gt;</span>
-<span class="s2">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/stylesheet.css&quot;&gt;</span>
-<span class="s2">    &lt;script src=&quot;/script.js&quot;&gt;&lt;/script&gt;</span>
+<span class="s2">    &lt;link rel=&quot;stylesheet&quot; href=&quot;./stylesheet.css&quot;&gt;</span>
+<span class="s2">    &lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;</span>
 <span class="s2">  &lt;/head&gt;</span>
 <span class="s2">  &lt;body&gt;</span>
 <span class="s2">    &lt;h1&gt;Home page&lt;/h1&gt;</span>
@@ -316,7 +316,7 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">&lt;/html&gt;</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 </pre></div>
-</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 144.22it/s]
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 107.13it/s]
 </pre></div>
 </div></div></div></div>
   </body>
