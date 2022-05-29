@@ -19,4 +19,5 @@ Would be nice:
 - Converting historic posts into this format.
 - Post commit git hook that runs the website generator.
 - Use system fonts, e.g. https://meta.stackexchange.com/questions/364048/we-are-switching-to-system-fonts-on-may-10-2021
+- Put my current website side to side with this, check it's ok (on desktop/mobile/ipad)
 ```
