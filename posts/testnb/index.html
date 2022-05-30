@@ -38,7 +38,7 @@ MathJax.Hub.Config({
 <p><code>bash 
 mkdir dirp</code></p>
 <p>Foo bar.</p>
-<p>This is de markdown.</p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="c1">#{hide}</span>
+<p>This is de markdown.</p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="c1"># {hide}</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
@@ -46,7 +46,7 @@ mkdir dirp</code></p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;de foo&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;de bar&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">)</span>
@@ -61,52 +61,56 @@ mkdir dirp</code></p>
 </pre></div>
 </div></div></div><div class="block"><div class="markdown"><p>{hide}</p>
 <p>I'd like to be able to hide cells.</p></div></div><div class="block"><div class="markdown"><p>{collapse}</p>
-<p>I'd like to be able to have collapsible cells.</p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="c1">#{hide} </span>
+<p>I'd like to be able to have collapsible cells.</p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="c1"># {hide}</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;d like to be able to hide code cells, but not the output&quot;</span><span class="p">)</span>
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>I&#39;d like to be able to hide code cells, but not the output
 </pre></div>
-</div></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="c1">#{collapse}</span>
+</div></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="c1"># {collapse}</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;d like to be able to have collapsible code cells, with the output showing&quot;</span><span class="p">)</span>
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>I&#39;d like to be able to have collapsible code cells, with the output showing
 </pre></div>
-</div></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="c1">#{collapse_all}</span>
+</div></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="c1"># {collapse_all}</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;d like to be able to collapse code and output.&quot;</span><span class="p">)</span>
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>I&#39;d like to be able to collapse code and output.
 </pre></div>
 </div></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
+
 <span class="k">class</span> <span class="nc">Variable</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">local_gradients</span><span class="o">=</span><span class="p">()):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">local_gradients</span> <span class="o">=</span> <span class="n">local_gradients</span>
-    
+
+
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="s2">&quot;Create the variable that results from adding two variables.&quot;</span>
-    <span class="n">value</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">value</span>    
+    <span class="n">value</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">value</span>
     <span class="n">local_gradients</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># the local derivative with respect to a is 1</span>
-        <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>   <span class="c1"># the local derivative with respect to b is 1</span>
+        <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># the local derivative with respect to b is 1</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">local_gradients</span><span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">mul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="s2">&quot;Create the variable that results from multiplying two variables.&quot;</span>
     <span class="n">value</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">b</span><span class="o">.</span><span class="n">value</span>
     <span class="n">local_gradients</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="c1"># the local derivative with respect to a is b.value</span>
-        <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># the local derivative with respect to b is a.value</span>
+        <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>  <span class="c1"># the local derivative with respect to a is b.value</span>
+        <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>  <span class="c1"># the local derivative with respect to b is a.value</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">local_gradients</span><span class="p">)</span>
 
+
 <span class="k">def</span> <span class="nf">get_gradients</span><span class="p">(</span><span class="n">variable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Compute the first derivatives of `variable` </span>
+    <span class="sd">&quot;&quot;&quot;Compute the first derivatives of `variable`</span>
 <span class="sd">    with respect to child variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">gradients</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
-    
+
     <span class="k">def</span> <span class="nf">compute_gradients</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">path_value</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">child_variable</span><span class="p">,</span> <span class="n">local_gradient</span> <span class="ow">in</span> <span class="n">variable</span><span class="o">.</span><span class="n">local_gradients</span><span class="p">:</span>
             <span class="c1"># &quot;Multiply the edges of a path&quot;:</span>
@@ -115,7 +119,7 @@ mkdir dirp</code></p>
             <span class="n">gradients</span><span class="p">[</span><span class="n">child_variable</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value_of_path_to_child</span>
             <span class="c1"># recurse through graph:</span>
             <span class="n">compute_gradients</span><span class="p">(</span><span class="n">child_variable</span><span class="p">,</span> <span class="n">value_of_path_to_child</span><span class="p">)</span>
-    
+
     <span class="n">compute_gradients</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">path_value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="c1"># (path_value=1 is from `variable` differentiated w.r.t. itself)</span>
     <span class="k">return</span> <span class="n">gradients</span>
