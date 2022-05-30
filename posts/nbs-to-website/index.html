@@ -75,14 +75,14 @@ This is that notebook.</p>
 <p>Make it possible to put parameters in the Jupyter Notebook cells, that can be looked at when building the website.</p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cell_flag</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get parameters in Jupyter cells, that are comments in the form:</span>
 
-<span class="sd">    #{{my_flag}}</span>
-<span class="sd">    #{{my_key=my_value}}</span>
+<span class="sd">    # {{my_flag}}</span>
+<span class="sd">    # {{my_key=my_value}}</span>
 <span class="sd">    x = 4</span>
-<span class="sd">    #{{foo=bar}}</span>
+<span class="sd">    # {{foo=bar}}</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^#\{\{.+\}\}&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">params</span><span class="p">)</span>  <span class="c1"># remove &#39;{{&#39;/&#39;}}&#39; from the strings</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^# \{\{.+\}\}&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">params</span><span class="p">)</span>  <span class="c1"># remove &#39;{{&#39;/&#39;}}&#39; from the strings</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -96,10 +96,10 @@ This is that notebook.</p>
 
 <span class="c1"># An example:</span>
 <span class="n">get_cell_flag</span><span class="p">(</span>
-    <span class="sd">&quot;&quot;&quot;#{{my_flag}}</span>
-<span class="sd">#{{my_key=my_value}}</span>
+    <span class="sd">&quot;&quot;&quot;# {{my_flag}}</span>
+<span class="sd"># {{my_key=my_value}}</span>
 <span class="sd">This is a simulation of a ipynb cell.</span>
-<span class="sd">#{{foo=bar}}</span>
+<span class="sd"># {{foo=bar}}</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
