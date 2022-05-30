@@ -5,4 +5,8 @@ if [ "$NO_GIT_HOOKS" = true ]; then
     echo NO_GIT_HOOKS="$NO_GIT_HOOKS" so aborting hook.
     exit 0
 fi
-black _notebooks
+
+black _notebooks --check
+[ $? -ne 0 ] && echo "Aborting commit: run black before committing." && exit 1
+
+echo "Pre-commit completed successfully."
