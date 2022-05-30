@@ -1,0 +1,30 @@
+#!/bin/bash
+
+echo Running post-commit hook...
+export COMMIT_MSG='post-commit hook: build site.'
+# Ignore "chore" commits
+export prev_msg="$(git show --no-patch --format=%B)"
+if [[ "$prev_msg" == chore* || "$prev_msg" == Chore* ]]; then
+    echo "post-commit: Not building site for 'chore' commit."
+    exit 0
+fi
+# Convert the nb to a script
+jupyter nbconvert --to script _notebooks/nbs-to-website.ipynb
+[ $? -ne 0 ] && echo "Failed to convert notebook to script. Aborting post-commit hook." && exit 1
+# Use the script to build the website
+python _notebooks/nbs-to-website.py
+[ $? -ne 0 ] && echo "Failed to build site. Aborting post-commit hook." && exit 1
+# Delete the script
+rm _notebooks/nbs-to-website.py
+# Add the relevant files
+git add index.html script.js stylesheet.css posts
+# Disable this hook, before committing
+chmod -x _git_hooks/post-commit
+# Turn off the warning
+git config advice.ignoredHook false
+# Commit the website
+git commit -m "$COMMIT_MSG"
+# Turn on the warning
+git config advice.ignoredHook True
+# Re-enable this hook
+chmod +x _git_hooks/post-commit # re-enable hook
