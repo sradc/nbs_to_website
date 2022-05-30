@@ -1,4 +1,8 @@
 #!/bin/bash
 
 echo Running pre-commit hook...
+if [ "$NO_GIT_HOOKS" = true ]; then
+    echo NO_GIT_HOOKS="$NO_GIT_HOOKS" so aborting hook.
+    exit 0
+fi
 black _notebooks
