@@ -151,34 +151,32 @@ This is that notebook.</p>
                 <span class="k">pass</span>
     <span class="k">return</span> <span class="n">result</span>
 </pre></div>
-</div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="n">mathjax</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">&lt;script type=&quot;text/javascript&quot; async</span>
-<span class="s2">  src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;</span>
-<span class="s2">&lt;/script&gt;</span>
+</div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="n">mathjax</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;script type=&quot;text/javascript&quot; async</span>
+<span class="s1">  src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;</span>
+<span class="s1">&lt;/script&gt;</span>
 
-<span class="s2">&lt;!-- MathJax configuration --&gt;</span>
-<span class="s2">&lt;script type=&quot;text/x-mathjax-config&quot;&gt;</span>
-<span class="s2">MathJax.Hub.Config({</span>
-<span class="s2">    tex2jax: {</span>
-<span class="s2">        inlineMath: [ [&#39;$&#39;,&#39;$&#39;], ],</span>
-<span class="s2">        displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], ],</span>
-<span class="s2">        processEscapes: true,</span>
-<span class="s2">        processEnvironments: true</span>
-<span class="s2">    },</span>
-<span class="s2">    // Center justify equations in code and markdown cells. Elsewhere</span>
-<span class="s2">    // we use CSS to left justify single line equations in code cells.</span>
-<span class="s2">    displayAlign: &#39;center&#39;,</span>
-<span class="s2">    &quot;HTML-CSS&quot;: {</span>
-<span class="s2">        styles: {&#39;.MathJax_Display&#39;: {&quot;margin&quot;: 0}},</span>
-<span class="s2">        linebreaks: { automatic: true }</span>
-<span class="s2">    }</span>
-<span class="s2">});</span>
-<span class="s2">&lt;/script&gt;</span>
-<span class="s2">&quot;&quot;&quot;</span>
+<span class="s1">&lt;!-- MathJax configuration --&gt;</span>
+<span class="s1">&lt;script type=&quot;text/x-mathjax-config&quot;&gt;</span>
+<span class="s1">MathJax.Hub.Config({</span>
+<span class="s1">    tex2jax: {</span>
+<span class="s1">        inlineMath: [ [&#39;$&#39;,&#39;$&#39;], ],</span>
+<span class="s1">        displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], ],</span>
+<span class="s1">        processEscapes: true,</span>
+<span class="s1">        processEnvironments: true</span>
+<span class="s1">    },</span>
+<span class="s1">    // Center justify equations in code and markdown cells. Elsewhere</span>
+<span class="s1">    // we use CSS to left justify single line equations in code cells.</span>
+<span class="s1">    displayAlign: &#39;center&#39;,</span>
+<span class="s1">    &quot;HTML-CSS&quot;: {</span>
+<span class="s1">        styles: {&#39;.MathJax_Display&#39;: {&quot;margin&quot;: 0}},</span>
+<span class="s1">        linebreaks: { automatic: true }</span>
+<span class="s1">    }</span>
+<span class="s1">});</span>
+<span class="s1">&lt;/script&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
 
-<span class="n">style</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">html_formatter</span><span class="o">.</span><span class="n">get_style_defs</span><span class="p">(</span><span class="s2">&quot;.highlight&quot;</span><span class="p">)</span>
-    <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="n">style</span> <span class="o">=</span> <span class="n">html_formatter</span><span class="o">.</span><span class="n">get_style_defs</span><span class="p">(</span><span class="s1">&#39;.highlight&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">.notebook {</span>
 <span class="s2">  margin: auto;</span>
 <span class="s2">  max-width: 666px;</span>
@@ -238,7 +236,6 @@ This is that notebook.</p>
 <span class="s2">https://david-kerwick.github.io/2012-05-03-get-prettify-to-behave-in-firefox/</span>
 <span class="s2">*/</span>
 <span class="s2">&quot;&quot;&quot;</span>
-<span class="p">)</span>
 </pre></div>
 </div></div><div class="block"><div class="markdown"><h3>Site directory structure:</h3>
 <p><code>generated_site/
@@ -257,26 +254,22 @@ This is that notebook.</p>
 <p><code>bash
 cd generated_site 
 python -m http.server</code></p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
     <span class="k">return</span> <span class="n">path</span>
-
 
 <span class="n">root</span> <span class="o">=</span> <span class="n">WEBSITE_DIR</span>
 <span class="n">posts</span> <span class="o">=</span> <span class="n">mkdir</span><span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;posts/&quot;</span><span class="p">)</span>
 
 <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;stylesheet.css&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
 
-<span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;script.js&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">console.log(&quot;hi from my script&quot;)</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="p">)</span>
+<span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;script.js&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">console.log(&quot;hi from my script&quot;)</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">notebook</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">nb_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">))):</span>
     <span class="n">post_dir</span> <span class="o">=</span> <span class="n">mkdir</span><span class="p">(</span><span class="n">posts</span> <span class="o">/</span> <span class="n">notebook</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
-    <span class="p">(</span><span class="n">post_dir</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">post_dir</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;!DOCTYPE html&gt;</span>
 <span class="s2">&lt;html lang=&quot;en&quot;&gt;</span>
 <span class="s2">  &lt;head&gt;</span>
@@ -291,14 +284,12 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">    </span><span class="si">{</span><span class="n">nb_to_html</span><span class="p">(</span><span class="n">notebook</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/body&gt;</span>
 <span class="s2">&lt;/html&gt;</span>
-<span class="s2">    &quot;&quot;&quot;</span>
-    <span class="p">)</span>
-    <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">post_dir</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)))</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">post_dir</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)))</span> 
 
-<span class="n">links</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;br/&gt;&lt;a href=&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">links</span><span class="p">)</span>
+<span class="n">links</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;br/&gt;&lt;a href=&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">links</span><span class="p">)</span>
 
-<span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;!DOCTYPE html&gt;</span>
 <span class="s2">&lt;html lang=&quot;en&quot;&gt;</span>
 <span class="s2">  &lt;head&gt;</span>
@@ -314,8 +305,7 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">    </span><span class="si">{</span><span class="n">links</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/body&gt;</span>
 <span class="s2">&lt;/html&gt;</span>
-<span class="s2">&quot;&quot;&quot;</span>
-<span class="p">)</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 109.46it/s]
 </pre></div>
