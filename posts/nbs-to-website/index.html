@@ -95,15 +95,19 @@ This is that notebook.</p>
 
 
 <span class="c1"># An example:</span>
-<span class="n">get_cell_flag</span><span class="p">(</span>
-    <span class="sd">&quot;&quot;&quot;# {{my_flag}}</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="n">get_cell_flag</span><span class="p">(</span>
+        <span class="sd">&quot;&quot;&quot;# {{my_flag}}</span>
 <span class="sd"># {{my_key=my_value}}</span>
 <span class="sd">This is a simulation of a ipynb cell.</span>
 <span class="sd"># {{foo=bar}}</span>
 <span class="sd">&quot;&quot;&quot;</span>
+    <span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
-</div></div><div class="block"><div class="markdown"><h3>Parsing the notebook</h3></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nb_to_html</span><span class="p">(</span><span class="n">nb_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>{&#39;my_flag&#39;: True, &#39;my_key&#39;: &#39;my_value&#39;, &#39;foo&#39;: &#39;bar&#39;}
+</pre></div>
+</div></div></div><div class="block"><div class="markdown"><h3>Parsing the notebook</h3></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nb_to_html</span><span class="p">(</span><span class="n">nb_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">nb_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">nb_path</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
     <span class="n">cells_as_html</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">])</span>
     <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cells_as_html</span><span class="p">)</span>
@@ -317,7 +321,7 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
-</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 109.46it/s]
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 126.07it/s]
 </pre></div>
 </div></div></div></div>
   </body>
