@@ -72,61 +72,29 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
-.notebook {
+.markdown, .code, .outputs {
   margin: auto;
-  max-width: 666px;
-  /*border: 1px solid green;*/
+  max-width: 600px;
   padding: 4px;
 }
-
-.markdown {
-    font-family: 'Open Sans', sans-serif;
+hr {
+  margin: auto;
+  max-width: 600px;
 }
-
-.code.outputs * {
-  font-family: 'Overpass Mono';
-  font-style: normal;
+.code, .outputs {
+  max-width: 720px;
+  overflow: auto;
 }
-
-.code * {
-    /*padding: 0px 8px 0px 8px;*/
-    background-color: #f8f8f8;
-    font-family: 'Overpass Mono', monospace;
-    font-size: 15px;
+.code {
+  background-color: #F8F8F8;
 }
-
 .outputs {
-    padding: 0px 16px 0px 16px;
+  background-color: #F0F0F0;
 }
-
-.outputs * {
-    font-family: 'Overpass Mono', monospace;
-    font-size: 15px;
+.notebook * {
+  font-family: sans-serif;
 }
-
-/* override pygments */
-.highlight {
-    background-color: rgba(0,0,0,0);
+.code *, .outputs * {
+  font-family: monospace;
+  background-color: rgba(0,0,0,0);
 }
-
-pre {
-    font-family: 'Overpass Mono', monospace;
-    overflow: auto;
-}
-
-.highlight pre code * {
-    white-space: nowrap;    // this sets all children inside to nowrap
-}
-
-.highlight pre {
-    overflow-x: auto;       // this sets the scrolling in x
-}
-
-.highlight pre code {
-    white-space: pre;       // forces <code> to respect <pre> formatting
-}
-
-/*
-^- thanks:
-https://david-kerwick.github.io/2012-05-03-get-prettify-to-behave-in-firefox/
-*/

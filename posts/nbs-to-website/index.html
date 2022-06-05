@@ -33,7 +33,7 @@ MathJax.Hub.Config({
 
   </head>
   <body>
-    <div class="notebook"><div class="block"><div class="markdown"><h1>This Jupyter Notebook generates this website.</h1></div></div><div class="block"><div class="markdown"><p>I wanted to be able to generate my website from a collection of Jupyter Notebooks.
+    <div class="notebook"><div class="markdown"><h1>This Jupyter Notebook generates this website.</h1></div><br><div class="markdown"><p>I wanted to be able to generate my website from a collection of Jupyter Notebooks.
 There's already tools for this.
 However, I thought it would be fun if the site was generated from one of its own notebooks. 
 This is that notebook.</p>
@@ -47,7 +47,11 @@ This is that notebook.</p>
 - Use pygments to convert code to highlighted html
 - Use markdown to convert the markdown to html
 - Convert the base64 string images into images, to enable caching/smaller sizes.
-- Specify the styling.</p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+- Specify the styling.</p>
+<p>Requirements:</p>
+<p><code>markdown=3.3.6
+pygments=2.11.2
+tqdm=4.62.3</code></p></div><br><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
@@ -59,7 +63,7 @@ This is that notebook.</p>
 <span class="n">text_lexer</span> <span class="o">=</span> <span class="n">lexers</span><span class="o">.</span><span class="n">TextLexer</span><span class="p">()</span>
 <span class="n">html_formatter</span> <span class="o">=</span> <span class="n">formatters</span><span class="o">.</span><span class="n">HtmlFormatter</span><span class="p">(</span><span class="n">linenos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
-</div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="c1"># if running as a script</span>
     <span class="n">nb_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span>
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
@@ -71,8 +75,8 @@ This is that notebook.</p>
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>WEBSITE_DIR = PosixPath(&#39;/Users/sidneyradcliffe/repos/nbs-to-website&#39;)
 </pre></div>
-</div></div></div><div class="block"><div class="markdown"><h3>Cell parameters</h3>
-<p>Make it possible to put parameters in the Jupyter Notebook cells, that can be looked at when building the website.</p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cell_flag</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
+</div></div><br><div class="markdown"><h3>Cell parameters</h3>
+<p>Make it possible to put parameters in the Jupyter Notebook cells, that can be looked at when building the website.</p></div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cell_flag</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get parameters in Jupyter cells, that are comments in the form:</span>
 
 <span class="sd">    # {{my_flag}}</span>
@@ -94,23 +98,19 @@ This is that notebook.</p>
     <span class="k">return</span> <span class="n">result</span>
 
 
-<span class="c1"># An example:</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="n">get_cell_flag</span><span class="p">(</span>
-        <span class="sd">&quot;&quot;&quot;# {{my_flag}}</span>
-<span class="sd"># {{my_key=my_value}}</span>
-<span class="sd">This is a simulation of a ipynb cell.</span>
-<span class="sd"># {{foo=bar}}</span>
-<span class="sd">&quot;&quot;&quot;</span>
-    <span class="p">)</span>
-<span class="p">)</span>
+<span class="n">example</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;# {{my_flag}}</span>
+<span class="s2"># {{my_key=my_value}}</span>
+<span class="s2">This is a simulation of a ipynb cell.</span>
+<span class="s2"># {{foo=bar}}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_cell_flag</span><span class="p">(</span><span class="n">example</span><span class="p">))</span>
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>{&#39;my_flag&#39;: True, &#39;my_key&#39;: &#39;my_value&#39;, &#39;foo&#39;: &#39;bar&#39;}
 </pre></div>
-</div></div></div><div class="block"><div class="markdown"><h3>Parsing the notebook</h3></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nb_to_html</span><span class="p">(</span><span class="n">nb_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</div></div><br><div class="markdown"><h3>Parsing the notebook</h3></div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nb_to_html</span><span class="p">(</span><span class="n">nb_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">nb_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">nb_path</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
     <span class="n">cells_as_html</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">])</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cells_as_html</span><span class="p">)</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&lt;br&gt;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cells_as_html</span><span class="p">)</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;notebook&quot;&gt;</span><span class="si">{</span><span class="n">html</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span>
 
 
@@ -133,8 +133,7 @@ This is that notebook.</p>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;outputs&quot;&gt;</span><span class="si">{</span><span class="n">outputs</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span><span class="p">)</span>
 
     <span class="n">cell_flag</span> <span class="o">=</span> <span class="n">get_cell_flag</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;block&quot;&gt;</span><span class="si">{</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span>
-    <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">cell_outputs_to_html</span><span class="p">(</span><span class="n">cell_outputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -142,7 +141,7 @@ This is that notebook.</p>
     <span class="k">for</span> <span class="n">cell_output</span> <span class="ow">in</span> <span class="n">cell_outputs</span><span class="p">:</span>
         <span class="k">match</span> <span class="n">cell_output</span><span class="p">[</span><span class="s2">&quot;output_type&quot;</span><span class="p">]:</span>
             <span class="k">case</span> <span class="s2">&quot;stream&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">text</span> <span class="o">:=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cell_output</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">text</span> <span class="o">:=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cell_output</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                     <span class="n">content</span> <span class="o">=</span> <span class="n">highlight</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">text_lexer</span><span class="p">,</span> <span class="n">html_formatter</span><span class="p">)</span>
                     <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;outtext&quot;&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
@@ -155,7 +154,7 @@ This is that notebook.</p>
                 <span class="k">pass</span>
     <span class="k">return</span> <span class="n">result</span>
 </pre></div>
-</div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="n">mathjax</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="n">mathjax</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;script type=&quot;text/javascript&quot; async</span>
 <span class="s2">  src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;</span>
 <span class="s2">&lt;/script&gt;</span>
@@ -183,68 +182,36 @@ This is that notebook.</p>
 <span class="n">style</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">html_formatter</span><span class="o">.</span><span class="n">get_style_defs</span><span class="p">(</span><span class="s2">&quot;.highlight&quot;</span><span class="p">)</span>
     <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">.notebook {</span>
+<span class="s2">.markdown, .code, .outputs {</span>
 <span class="s2">  margin: auto;</span>
-<span class="s2">  max-width: 666px;</span>
-<span class="s2">  /*border: 1px solid green;*/</span>
+<span class="s2">  max-width: 600px;</span>
 <span class="s2">  padding: 4px;</span>
 <span class="s2">}</span>
-
-<span class="s2">.markdown {</span>
-<span class="s2">    font-family: &#39;Open Sans&#39;, sans-serif;</span>
+<span class="s2">hr {</span>
+<span class="s2">  margin: auto;</span>
+<span class="s2">  max-width: 600px;</span>
 <span class="s2">}</span>
-
-<span class="s2">.code.outputs * {</span>
-<span class="s2">  font-family: &#39;Overpass Mono&#39;;</span>
-<span class="s2">  font-style: normal;</span>
+<span class="s2">.code, .outputs {</span>
+<span class="s2">  max-width: 720px;</span>
+<span class="s2">  overflow: auto;</span>
 <span class="s2">}</span>
-
-<span class="s2">.code * {</span>
-<span class="s2">    /*padding: 0px 8px 0px 8px;*/</span>
-<span class="s2">    background-color: #f8f8f8;</span>
-<span class="s2">    font-family: &#39;Overpass Mono&#39;, monospace;</span>
-<span class="s2">    font-size: 15px;</span>
+<span class="s2">.code {</span>
+<span class="s2">  background-color: #F8F8F8;</span>
 <span class="s2">}</span>
-
 <span class="s2">.outputs {</span>
-<span class="s2">    padding: 0px 16px 0px 16px;</span>
+<span class="s2">  background-color: #F0F0F0;</span>
 <span class="s2">}</span>
-
-<span class="s2">.outputs * {</span>
-<span class="s2">    font-family: &#39;Overpass Mono&#39;, monospace;</span>
-<span class="s2">    font-size: 15px;</span>
+<span class="s2">.notebook * {</span>
+<span class="s2">  font-family: sans-serif;</span>
 <span class="s2">}</span>
-
-<span class="s2">/* override pygments */</span>
-<span class="s2">.highlight {</span>
-<span class="s2">    background-color: rgba(0,0,0,0);</span>
+<span class="s2">.code *, .outputs * {</span>
+<span class="s2">  font-family: monospace;</span>
+<span class="s2">  background-color: rgba(0,0,0,0);</span>
 <span class="s2">}</span>
-
-<span class="s2">pre {</span>
-<span class="s2">    font-family: &#39;Overpass Mono&#39;, monospace;</span>
-<span class="s2">    overflow: auto;</span>
-<span class="s2">}</span>
-
-<span class="s2">.highlight pre code * {</span>
-<span class="s2">    white-space: nowrap;    // this sets all children inside to nowrap</span>
-<span class="s2">}</span>
-
-<span class="s2">.highlight pre {</span>
-<span class="s2">    overflow-x: auto;       // this sets the scrolling in x</span>
-<span class="s2">}</span>
-
-<span class="s2">.highlight pre code {</span>
-<span class="s2">    white-space: pre;       // forces &lt;code&gt; to respect &lt;pre&gt; formatting</span>
-<span class="s2">}</span>
-
-<span class="s2">/*</span>
-<span class="s2">^- thanks:</span>
-<span class="s2">https://david-kerwick.github.io/2012-05-03-get-prettify-to-behave-in-firefox/</span>
-<span class="s2">*/</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
-</div></div><div class="block"><div class="markdown"><h3>Site directory structure:</h3>
+</div><br><div class="markdown"><h3>Site directory structure:</h3>
 <p><code>generated_site/
     index.html
     stylesheet.css
@@ -260,7 +227,7 @@ This is that notebook.</p>
 <p>To see it:</p>
 <p><code>bash
 cd generated_site 
-python -m http.server</code></p></div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+python -m http.server</code></p></div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">path</span>
 
@@ -276,7 +243,7 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
-</div></div><div class="block"><div class="code"><div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">notebook</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">nb_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">))):</span>
     <span class="n">post_dir</span> <span class="o">=</span> <span class="n">mkdir</span><span class="p">(</span><span class="n">posts</span> <span class="o">/</span> <span class="n">notebook</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
     <span class="p">(</span><span class="n">post_dir</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
@@ -323,7 +290,7 @@ python -m http.server</code></p></div></div><div class="block"><div class="code"
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 126.07it/s]
 </pre></div>
-</div></div></div></div>
+</div></div></div>
   </body>
 </html>
     
