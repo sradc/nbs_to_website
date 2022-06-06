@@ -63,6 +63,7 @@ tqdm=4.62.3
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">from</span> <span class="nn">marko</span> <span class="kn">import</span> <span class="n">convert</span> <span class="k">as</span> <span class="n">markdown</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">formatters</span><span class="p">,</span> <span class="n">lexers</span><span class="p">,</span> <span class="n">highlight</span>
 <span class="kn">from</span> <span class="nn">pygments.styles</span> <span class="kn">import</span> <span class="n">STYLE_MAP</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
@@ -166,8 +167,11 @@ tqdm=4.62.3
                     <span class="n">imdata</span> <span class="o">=</span> <span class="n">imdata</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
                     <span class="nb">hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">imdata</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
                     <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">hash</span><span class="p">[:</span><span class="n">IMG_NAME_HASH_LEN</span><span class="p">]</span><span class="si">}</span><span class="s2">.png&quot;</span>
-                    <span class="p">(</span><span class="n">post_dir</span> <span class="o">/</span> <span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodebytes</span><span class="p">(</span><span class="n">imdata</span><span class="p">))</span>
-                    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;img src=&quot;./</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&quot; class=&quot;out_img&quot;/&gt;&#39;</span>
+                    <span class="n">file_path</span> <span class="o">=</span> <span class="n">post_dir</span> <span class="o">/</span> <span class="n">fname</span>
+                    <span class="n">file_path</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodebytes</span><span class="p">(</span><span class="n">imdata</span><span class="p">))</span>
+                    <span class="k">with</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">img</span><span class="p">:</span>
+                        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">size</span>
+                    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;img src=&quot;./</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&quot; width=&quot;</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s1">&quot; height=&quot;</span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s1">&quot; class=&quot;out_img&quot;/&gt;&#39;</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
             <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
                 <span class="k">pass</span>
