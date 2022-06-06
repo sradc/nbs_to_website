@@ -91,10 +91,10 @@ hr {
 .outputs {
   background-color: #F0F0F0;
 }
-.notebook * {
+.notebook {
   font-family: sans-serif;
 }
-.code *, .outputs * {
+.code *, .outputs *, code {
   font-family: monospace;
   background-color: rgba(0,0,0,0);
 }
