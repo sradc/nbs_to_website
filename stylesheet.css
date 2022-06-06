@@ -72,14 +72,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
-.markdown, .code, .outputs {
+.code, .markdown, .outputs {
   margin: auto;
   max-width: 600px;
-  padding: 4px;
-}
-hr {
-  margin: auto;
-  max-width: 600px;
+  padding: 4px 4px 4px 8px;
+  box-sizing: border-box;
 }
 .code, .outputs {
   max-width: 720px;
@@ -87,9 +84,16 @@ hr {
 }
 .code {
   background-color: #F8F8F8;
+  /*box-shadow: inset 3px 3px 4px 3px #F0F0F0;*/
 }
 .outputs {
-  background-color: #F0F0F0;
+  /*
+  box-shadow: inset 0px 0px 1px 4px #F8F8F8;
+  background-color: lightgray;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAAAAABX3VL4AAAADklEQVQI12P4/5/hPwMACvsC/tmfKMUAAAAASUVORK5CYII=);
+  */
+  box-shadow: inset 4px -4px 3px #F0F0F0;
+  border: 6px solid #F8F8F8;
 }
 .notebook {
   font-family: sans-serif;

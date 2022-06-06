@@ -56,19 +56,28 @@ This is that notebook.</p>
 pygments=2.11.2
 tqdm=4.62.3
 </code></pre>
-</div><br><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">from</span> <span class="nn">marko</span> <span class="kn">import</span> <span class="n">convert</span> <span class="k">as</span> <span class="n">markdown</span>
 <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">formatters</span><span class="p">,</span> <span class="n">lexers</span><span class="p">,</span> <span class="n">highlight</span>
+<span class="kn">from</span> <span class="nn">pygments.styles</span> <span class="kn">import</span> <span class="n">STYLE_MAP</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">IMG_NAME_HASH_LEN</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># use first `IMG_NAME_HASH_LEN` of hash for filename</span>
 
 <span class="n">python_lexer</span> <span class="o">=</span> <span class="n">lexers</span><span class="o">.</span><span class="n">PythonLexer</span><span class="p">()</span>
 <span class="n">text_lexer</span> <span class="o">=</span> <span class="n">lexers</span><span class="o">.</span><span class="n">TextLexer</span><span class="p">()</span>
-<span class="n">html_formatter</span> <span class="o">=</span> <span class="n">formatters</span><span class="o">.</span><span class="n">HtmlFormatter</span><span class="p">(</span><span class="n">linenos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">html_formatter</span> <span class="o">=</span> <span class="n">formatters</span><span class="o">.</span><span class="n">HtmlFormatter</span><span class="p">(</span><span class="n">linenos</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
 </pre></div>
-</div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">STYLE_MAP</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</pre></div>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>dict_keys([&#39;default&#39;, &#39;emacs&#39;, &#39;friendly&#39;, &#39;friendly_grayscale&#39;, &#39;colorful&#39;, &#39;autumn&#39;, &#39;murphy&#39;, &#39;manni&#39;, &#39;material&#39;, &#39;monokai&#39;, &#39;perldoc&#39;, &#39;pastie&#39;, &#39;borland&#39;, &#39;trac&#39;, &#39;native&#39;, &#39;fruity&#39;, &#39;bw&#39;, &#39;vim&#39;, &#39;vs&#39;, &#39;tango&#39;, &#39;rrt&#39;, &#39;xcode&#39;, &#39;igor&#39;, &#39;paraiso-light&#39;, &#39;paraiso-dark&#39;, &#39;lovelace&#39;, &#39;algol&#39;, &#39;algol_nu&#39;, &#39;arduino&#39;, &#39;rainbow_dash&#39;, &#39;abap&#39;, &#39;solarized-dark&#39;, &#39;solarized-light&#39;, &#39;sas&#39;, &#39;stata&#39;, &#39;stata-light&#39;, &#39;stata-dark&#39;, &#39;inkpot&#39;, &#39;zenburn&#39;, &#39;gruvbox-dark&#39;, &#39;gruvbox-light&#39;, &#39;dracula&#39;, &#39;one-dark&#39;, &#39;lilypond&#39;])
+</pre></div>
+</div></div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="c1"># if running as a script</span>
     <span class="n">nb_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span>
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
@@ -114,14 +123,14 @@ tqdm=4.62.3
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>{&#39;my_flag&#39;: True, &#39;my_key&#39;: &#39;my_value&#39;, &#39;foo&#39;: &#39;bar&#39;}
 </pre></div>
 </div></div><br><div class="markdown"><h3>Parsing the notebook</h3>
-</div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nb_to_html</span><span class="p">(</span><span class="n">nb_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nb_to_html</span><span class="p">(</span><span class="n">nb_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">post_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">nb_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">nb_path</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
-    <span class="n">cells_as_html</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">])</span>
+    <span class="n">cells_as_html</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">post_dir</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">])</span>
     <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&lt;br&gt;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cells_as_html</span><span class="p">)</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;notebook&quot;&gt;</span><span class="si">{</span><span class="n">html</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span>
 
 
-<span class="k">def</span> <span class="nf">cell_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="k">def</span> <span class="nf">cell_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">post_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">content</span><span class="p">:</span>
@@ -136,14 +145,14 @@ tqdm=4.62.3
             <span class="o">+</span> <span class="s2">&quot;&lt;/div&gt;&quot;</span>
         <span class="p">)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">outputs</span> <span class="o">:=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cell_outputs_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="s2">&quot;outputs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">outputs</span> <span class="o">:=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cell_outputs_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="s2">&quot;outputs&quot;</span><span class="p">],</span> <span class="n">post_dir</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;outputs&quot;&gt;</span><span class="si">{</span><span class="n">outputs</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span><span class="p">)</span>
 
     <span class="n">cell_flag</span> <span class="o">=</span> <span class="n">get_cell_flag</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">cell_outputs_to_html</span><span class="p">(</span><span class="n">cell_outputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">cell_outputs_to_html</span><span class="p">(</span><span class="n">cell_outputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">post_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">cell_output</span> <span class="ow">in</span> <span class="n">cell_outputs</span><span class="p">:</span>
         <span class="k">match</span> <span class="n">cell_output</span><span class="p">[</span><span class="s2">&quot;output_type&quot;</span><span class="p">]:</span>
@@ -154,8 +163,11 @@ tqdm=4.62.3
                     <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
             <span class="k">case</span> <span class="s2">&quot;display_data&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">imdata</span> <span class="o">:=</span> <span class="n">cell_output</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;image/png&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-                    <span class="n">img</span> <span class="o">=</span> <span class="s2">&quot;data:image/png;base64,&quot;</span> <span class="o">+</span> <span class="n">imdata</span>
-                    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;img src=&quot;</span><span class="si">{</span><span class="n">img</span><span class="si">}</span><span class="s1">&quot; class=&quot;out_img&quot;/&gt;&#39;</span>
+                    <span class="n">imdata</span> <span class="o">=</span> <span class="n">imdata</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+                    <span class="nb">hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">imdata</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+                    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">hash</span><span class="p">[:</span><span class="n">IMG_NAME_HASH_LEN</span><span class="p">]</span><span class="si">}</span><span class="s2">.png&quot;</span>
+                    <span class="p">(</span><span class="n">post_dir</span> <span class="o">/</span> <span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodebytes</span><span class="p">(</span><span class="n">imdata</span><span class="p">))</span>
+                    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;img src=&quot;./</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&quot; class=&quot;out_img&quot;/&gt;&#39;</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
             <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
                 <span class="k">pass</span>
@@ -189,14 +201,11 @@ tqdm=4.62.3
 <span class="n">style</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">html_formatter</span><span class="o">.</span><span class="n">get_style_defs</span><span class="p">(</span><span class="s2">&quot;.highlight&quot;</span><span class="p">)</span>
     <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">.markdown, .code, .outputs {</span>
+<span class="s2">.code, .markdown, .outputs {</span>
 <span class="s2">  margin: auto;</span>
 <span class="s2">  max-width: 600px;</span>
-<span class="s2">  padding: 4px;</span>
-<span class="s2">}</span>
-<span class="s2">hr {</span>
-<span class="s2">  margin: auto;</span>
-<span class="s2">  max-width: 600px;</span>
+<span class="s2">  padding: 4px 4px 4px 8px;</span>
+<span class="s2">  box-sizing: border-box;</span>
 <span class="s2">}</span>
 <span class="s2">.code, .outputs {</span>
 <span class="s2">  max-width: 720px;</span>
@@ -204,9 +213,16 @@ tqdm=4.62.3
 <span class="s2">}</span>
 <span class="s2">.code {</span>
 <span class="s2">  background-color: #F8F8F8;</span>
+<span class="s2">  /*box-shadow: inset 3px 3px 4px 3px #F0F0F0;*/</span>
 <span class="s2">}</span>
 <span class="s2">.outputs {</span>
-<span class="s2">  background-color: #F0F0F0;</span>
+<span class="s2">  /*</span>
+<span class="s2">  box-shadow: inset 0px 0px 1px 4px #F8F8F8;</span>
+<span class="s2">  background-color: lightgray;</span>
+<span class="s2">  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAAAAABX3VL4AAAADklEQVQI12P4/5/hPwMACvsC/tmfKMUAAAAASUVORK5CYII=);</span>
+<span class="s2">  */</span>
+<span class="s2">  box-shadow: inset 4px -4px 3px #F0F0F0;</span>
+<span class="s2">  border: 6px solid #F8F8F8;</span>
 <span class="s2">}</span>
 <span class="s2">.notebook {</span>
 <span class="s2">  font-family: sans-serif;</span>
@@ -268,7 +284,7 @@ python -m http.server
 <span class="s2">    </span><span class="si">{</span><span class="n">mathjax</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/head&gt;</span>
 <span class="s2">  &lt;body&gt;</span>
-<span class="s2">    </span><span class="si">{</span><span class="n">nb_to_html</span><span class="p">(</span><span class="n">notebook</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">    </span><span class="si">{</span><span class="n">nb_to_html</span><span class="p">(</span><span class="n">notebook</span><span class="p">,</span> <span class="n">post_dir</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/body&gt;</span>
 <span class="s2">&lt;/html&gt;</span>
 <span class="s2">    &quot;&quot;&quot;</span>
@@ -296,9 +312,9 @@ python -m http.server
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
-</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 126.07it/s]
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 92.89it/s]
 </pre></div>
-</div></div></div>
+</div></div><br></div>
   </body>
 </html>
     
