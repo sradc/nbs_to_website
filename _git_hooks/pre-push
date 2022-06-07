@@ -19,3 +19,8 @@ bash _scripts/build-site.sh
 git add index.html script.js stylesheet.css posts
 # Commit the website
 git commit -m "$COMMIT_MSG"
+# Ok for commit to fail, e.g. have already built site
+# or haven't changed site,
+# so need to make sure script exits with 0,
+# or push will fail.
+[ $? -ne 0 ] && exit 0
