@@ -92,7 +92,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   background-color: lightgray;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAAAAABX3VL4AAAADklEQVQI12P4/5/hPwMACvsC/tmfKMUAAAAASUVORK5CYII=);
   */
-  box-shadow: inset 4px -4px 3px #F0F0F0;
+  box-shadow: inset 4px -4px 0px #F0F0F0;
   border: 6px solid #F8F8F8;
 }
 .notebook {
