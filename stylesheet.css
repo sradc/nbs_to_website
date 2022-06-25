@@ -106,3 +106,12 @@ code, .markdown pre {
     overflow-x: auto;
     overflow-y: hidden;
 }
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+ul {
+  padding: 4px 4px 4px 8px;
+}

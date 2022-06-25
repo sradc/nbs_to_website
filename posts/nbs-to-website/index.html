@@ -253,6 +253,15 @@ tqdm=4.62.3
 <span class="s2">    overflow-x: auto;</span>
 <span class="s2">    overflow-y: hidden;</span>
 <span class="s2">}</span>
+<span class="s2">a {</span>
+<span class="s2">  text-decoration: none;</span>
+<span class="s2">}</span>
+<span class="s2">a:hover {</span>
+<span class="s2">  text-decoration: underline;</span>
+<span class="s2">}</span>
+<span class="s2">ul {</span>
+<span class="s2">  padding: 4px 4px 4px 8px;</span>
+<span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
@@ -343,7 +352,13 @@ _notebooks/nbs-to-website.ipynb
 <span class="n">_links</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">link</span><span class="p">,</span> <span class="n">nb</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">links</span><span class="p">,</span> <span class="n">notebooks</span><span class="p">):</span>
     <span class="n">_links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;./</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="s2">&quot;last_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> &lt;/a&gt;&lt;/li&gt;&#39;</span>
+        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;li&gt;</span>
+<span class="s2">        &lt;a href=&quot;./</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s2">&quot;&gt;</span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">        &lt;br&gt; </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">        &lt;/a&gt;</span>
+<span class="s2">        &lt;/li&gt;</span>
+<span class="s2">      &quot;&quot;&quot;</span>
     <span class="p">)</span>
 
 <span class="n">links</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_links</span><span class="p">)</span>
