@@ -32,22 +32,25 @@ MathJax.Hub.Config({
 </script>
 
   </head>
-  <body>
-    <p style="font-family:monospace">
-      first commit: 2022-05-29 16:35 
-      ---
-      latest commit: 2022-06-25 10:24
+  <header>
+     <p style="font-family:monospace">
+      <br>
+      first commit: 2022-05-29 
+      <br>
+      last commit: 2022-06-25
     </p>
+  </header>
+  <body>
     <div class="notebook"><div class="markdown"><h1>This Jupyter Notebook generates this website.</h1>
 </div><br><div class="markdown"><p>I wanted to be able to generate my website from a collection of Jupyter Notebooks.
 There's already tools for this...
 But, I thought it would be fun if the site was generated from one of its own notebooks.
 This is that notebook.</p>
-<p>This is a kind of messy work in progress...</p>
-<p>My workflow when making changes here is to then run:</p>
+<p>This is a kind of messy work in progress... Probably not worth reading this, unless you're interested in a cobbled together thing that just about gets the job done.</p>
+<p>My workflow has been to make changes here, then run:</p>
 <pre><code class="language-bash">bash _scripts/build-site.sh &amp;&amp; python -m http.server
 </code></pre>
-<p>... to generate and serve the site.</p>
+<p>Which runs this notebook as a script, then serves the result.</p>
 <p>Some things this notebook does:</p>
 <ul>
 <li>Parse the Jupyter Notebooks.</li>
@@ -233,11 +236,6 @@ tqdm=4.62.3
 <span class="s2">  /*box-shadow: inset 3px 3px 4px 3px #F0F0F0;*/</span>
 <span class="s2">}</span>
 <span class="s2">.outputs {</span>
-<span class="s2">  /*</span>
-<span class="s2">  box-shadow: inset 0px 0px 1px 4px #F8F8F8;</span>
-<span class="s2">  background-color: lightgray;</span>
-<span class="s2">  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAAAAABX3VL4AAAADklEQVQI12P4/5/hPwMACvsC/tmfKMUAAAAASUVORK5CYII=);</span>
-<span class="s2">  */</span>
 <span class="s2">  box-shadow: inset 4px -4px 0px #F0F0F0;</span>
 <span class="s2">  border: 6px solid #F8F8F8;</span>
 <span class="s2">}</span>
@@ -247,6 +245,13 @@ tqdm=4.62.3
 <span class="s2">.code *, .outputs *, code {</span>
 <span class="s2">  font-family: monospace;</span>
 <span class="s2">  background-color: rgba(0,0,0,0);</span>
+<span class="s2">}</span>
+<span class="s2">code, .markdown pre {  </span>
+<span class="s2">  overflow: auto;</span>
+<span class="s2">}</span>
+<span class="s2">.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {</span>
+<span class="s2">    overflow-x: auto;</span>
+<span class="s2">    overflow-y: hidden;</span>
 <span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
@@ -298,10 +303,11 @@ posts/
         <span class="p">}</span>
     <span class="p">)</span>
 
-<span class="n">notebooks</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">notebooks</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">])</span>
+<span class="n">notebooks</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">notebooks</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">]))</span>
 </pre></div>
-</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>_notebooks/nbs-to-website.ipynb
-_notebooks/testnb.ipynb
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>_notebooks/commit-test.ipynb
+_notebooks/page-generation-tests.ipynb
+_notebooks/nbs-to-website.ipynb
 </pre></div>
 </div></div><br><div class="code"><div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">notebook</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">notebooks</span><span class="p">):</span>
@@ -318,12 +324,15 @@ _notebooks/testnb.ipynb
 <span class="s2">    &lt;script src=&quot;../../script.js&quot;&gt;&lt;/script&gt;</span>
 <span class="s2">    </span><span class="si">{</span><span class="n">mathjax</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/head&gt;</span>
-<span class="s2">  &lt;body&gt;</span>
-<span class="s2">    &lt;p style=&quot;font-family:monospace&quot;&gt;</span>
-<span class="s2">      first commit: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span>
-<span class="s2">      ---</span>
-<span class="s2">      latest commit: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;last_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">  &lt;header&gt;</span>
+<span class="s2">     &lt;p style=&quot;font-family:monospace&quot;&gt;</span>
+<span class="s2">      &lt;br&gt;</span>
+<span class="s2">      first commit: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span>
+<span class="s2">      &lt;br&gt;</span>
+<span class="s2">      last commit: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;last_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">    &lt;/p&gt;</span>
+<span class="s2">  &lt;/header&gt;</span>
+<span class="s2">  &lt;body&gt;</span>
 <span class="s2">    </span><span class="si">{</span><span class="n">nb_to_html</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">],</span> <span class="n">post_dir</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/body&gt;</span>
 <span class="s2">&lt;/html&gt;</span>
@@ -343,6 +352,7 @@ _notebooks/testnb.ipynb
 <span class="s2">  margin: auto;</span>
 <span class="s2">  max-width: 600px;</span>
 <span class="s2">  font-family: sans-serif;</span>
+<span class="s2">  padding: 4px 4px 4px 8px;</span>
 <span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
@@ -367,7 +377,9 @@ _notebooks/testnb.ipynb
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
-</div><br></div>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 3/3 [00:00&lt;00:00, 94.09it/s]
+</pre></div>
+</div></div></div>
   </body>
 </html>
     

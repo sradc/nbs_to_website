@@ -89,11 +89,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   /*box-shadow: inset 3px 3px 4px 3px #F0F0F0;*/
 }
 .outputs {
-  /*
-  box-shadow: inset 0px 0px 1px 4px #F8F8F8;
-  background-color: lightgray;
-  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAAAAABX3VL4AAAADklEQVQI12P4/5/hPwMACvsC/tmfKMUAAAAASUVORK5CYII=);
-  */
   box-shadow: inset 4px -4px 0px #F0F0F0;
   border: 6px solid #F8F8F8;
 }
@@ -103,4 +98,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .code *, .outputs *, code {
   font-family: monospace;
   background-color: rgba(0,0,0,0);
+}
+code, .markdown pre {  
+  overflow: auto;
+}
+.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
+    overflow-x: auto;
+    overflow-y: hidden;
 }
