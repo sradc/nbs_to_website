@@ -35,21 +35,25 @@ MathJax.Hub.Config({
   <body>
     <div class="notebook"><div class="markdown"><h1>This Jupyter Notebook generates this website.</h1>
 </div><br><div class="markdown"><p>I wanted to be able to generate my website from a collection of Jupyter Notebooks.
-There's already tools for this.
-However, I thought it would be fun if the site was generated from one of its own notebooks.
+There's already tools for this...
+But, I thought it would be fun if the site was generated from one of its own notebooks.
 This is that notebook.</p>
-<p>This is still a work in progress, (missing features + needs some tidying up).</p>
+<p>This is a kind of messy work in progress...</p>
+<p>My workflow when making changes here is to then run:</p>
+<pre><code class="language-bash">bash _scripts/build-site.sh &amp;&amp; python -m http.server
+</code></pre>
+<p>... to generate and serve the site.</p>
 <p>Some things this notebook does:</p>
 <ul>
-<li>Read the Jupyter Notebook (it's json data, so easy to load).</li>
+<li>Parse the Jupyter Notebooks.</li>
 <li>Get the text content of markdown/code cells.</li>
 <li>Get the text output or image output of cells.</li>
 <li>Enable &quot;cell parameters&quot;, e.g. for flagging when to hide cells, etc.</li>
-<li>Put it into html</li>
-<li>Use pygments to convert code to highlighted html</li>
-<li>Use markdown to convert the markdown to html</li>
-<li>Convert the base64 string images into images, to enable caching/smaller sizes.</li>
-<li>Specify the styling.</li>
+<li>Generate html</li>
+<li>Use <code>pygments</code> to convert code to highlighted html</li>
+<li>Use <code>marko</code> to convert the markdown to html</li>
+<li>Convert the base64 string images into images, to enable caching/faster page loading.</li>
+<li>Generates style/homepage/...</li>
 </ul>
 <p>Requirements:</p>
 <pre><code>markdown=3.3.6
@@ -207,9 +211,11 @@ tqdm=4.62.3
     <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">.code, .markdown, .outputs {</span>
 <span class="s2">  margin: auto;</span>
-<span class="s2">  max-width: 600px;</span>
 <span class="s2">  padding: 4px 4px 4px 8px;</span>
 <span class="s2">  box-sizing: border-box;</span>
+<span class="s2">}</span>
+<span class="s2">.markdown {</span>
+<span class="s2">  max-width: 600px;</span>
 <span class="s2">}</span>
 <span class="s2">.code, .outputs {</span>
 <span class="s2">  max-width: 720px;</span>
@@ -239,22 +245,20 @@ tqdm=4.62.3
 <span class="p">)</span>
 </pre></div>
 </div><br><div class="markdown"><h3>Site directory structure:</h3>
-<pre><code>generated_site/
-    index.html
-    stylesheet.css
-    script.js
-    posts/
-        notebook_1/
-            index.html
-            image_1.jpg
-            image_2.jpg
-        notebook_2/
-            index.html
-            image_1.jpg
+<pre><code>index.html
+stylesheet.css
+script.js
+posts/
+    notebook_1/
+        index.html
+        image_1.jpg
+        image_2.jpg
+    notebook_2/
+        index.html
+        image_1.jpg
 </code></pre>
-<p>To see it:</p>
-<pre><code class="language-bash">cd generated_site 
-python -m http.server
+<p>To serve:</p>
+<pre><code class="language-bash">python -m http.server
 </code></pre>
 </div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -293,9 +297,16 @@ python -m http.server
 <span class="s2">&lt;/html&gt;</span>
 <span class="s2">    &quot;&quot;&quot;</span>
     <span class="p">)</span>
-    <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">post_dir</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)))</span>
+    <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post_dir</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
 
-<span class="n">links</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;br/&gt;&lt;a href=&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">links</span><span class="p">)</span>
+<span class="n">links</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;./</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&lt;/a&gt;&lt;/li&gt;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">links</span><span class="p">)</span>
+<span class="n">home_style</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">body {</span>
+<span class="s2">  margin: auto;</span>
+<span class="s2">  max-width: 600px;</span>
+<span class="s2">  font-family: sans-serif;</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
 <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
     <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
@@ -309,9 +320,11 @@ python -m http.server
 <span class="s2">    &lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;</span>
 <span class="s2">  &lt;/head&gt;</span>
 <span class="s2">  &lt;body&gt;</span>
-<span class="s2">    &lt;h1&gt;Home page&lt;/h1&gt;</span>
-<span class="s2">    </span><span class="si">{</span><span class="n">links</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">    &lt;h1&gt;Sid&#39;s site&lt;/h1&gt;</span>
+<span class="s2">    &lt;h2&gt;Posts&lt;/h2&gt;</span>
+<span class="s2">    &lt;ul&gt;</span><span class="si">{</span><span class="n">links</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
 <span class="s2">  &lt;/body&gt;</span>
+<span class="s2">  &lt;style&gt;</span><span class="si">{</span><span class="n">home_style</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
 <span class="s2">&lt;/html&gt;</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
