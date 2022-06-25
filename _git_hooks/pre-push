@@ -24,3 +24,4 @@ git commit -m "$COMMIT_MSG"
 # so need to make sure script exits with 0,
 # or push will fail.
 [ $? -ne 0 ] && exit 0
+exit 0
