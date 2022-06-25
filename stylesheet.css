@@ -115,6 +115,9 @@ a:hover {
 header, header * {
   vertical-align: top;
 }
-ul, li {
-  padding: 8px 4px 4px 8px;
+li {
+  padding: 8px 0px 8px 0px;
+}
+ul {
+  padding: 8px 0px 8px 4px;
 }
