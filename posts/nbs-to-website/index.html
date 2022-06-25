@@ -33,6 +33,11 @@ MathJax.Hub.Config({
 
   </head>
   <body>
+    <p style="font-family:monospace">
+      first commit: 2022-05-29 16:35 
+      ---
+      latest commit: 2022-06-25 10:24
+    </p>
     <div class="notebook"><div class="markdown"><h1>This Jupyter Notebook generates this website.</h1>
 </div><br><div class="markdown"><p>I wanted to be able to generate my website from a collection of Jupyter Notebooks.
 There's already tools for this...
@@ -61,10 +66,12 @@ pygments=2.11.2
 tqdm=4.62.3
 </code></pre>
 </div><br><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
 
 <span class="kn">from</span> <span class="nn">marko</span> <span class="kn">import</span> <span class="n">convert</span> <span class="k">as</span> <span class="n">markdown</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
@@ -265,20 +272,40 @@ posts/
     <span class="k">return</span> <span class="n">path</span>
 
 
-<span class="n">root</span> <span class="o">=</span> <span class="n">WEBSITE_DIR</span>
-<span class="n">posts</span> <span class="o">=</span> <span class="n">mkdir</span><span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;posts/&quot;</span><span class="p">)</span>
+<span class="n">posts</span> <span class="o">=</span> <span class="n">mkdir</span><span class="p">(</span><span class="n">WEBSITE_DIR</span> <span class="o">/</span> <span class="s2">&quot;posts/&quot;</span><span class="p">)</span>
 
-<span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;stylesheet.css&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+<span class="p">(</span><span class="n">WEBSITE_DIR</span> <span class="o">/</span> <span class="s2">&quot;stylesheet.css&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
 
-<span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;script.js&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+<span class="p">(</span><span class="n">WEBSITE_DIR</span> <span class="o">/</span> <span class="s2">&quot;script.js&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">console.log(&quot;hi from my script&quot;)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
-</div><br><div class="code"><div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">notebook</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">nb_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">))):</span>
-    <span class="n">post_dir</span> <span class="o">=</span> <span class="n">mkdir</span><span class="p">(</span><span class="n">posts</span> <span class="o">/</span> <span class="n">notebook</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="c1"># get git commit times...</span>
+
+<span class="n">notebooks</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">notebook</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">nb_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">notebook</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">WEBSITE_DIR</span><span class="p">))</span>
+    <span class="c1"># !git log -1 --format=%ct ../{notebook.relative_to(WEBSITE_DIR)}</span>
+    <span class="n">commit_times</span> <span class="o">=</span> <span class="err">!</span><span class="n">git</span> <span class="n">log</span> <span class="o">--</span><span class="nb">format</span><span class="o">=%</span><span class="n">ct</span> <span class="p">{</span><span class="n">notebook</span><span class="o">.</span><span class="n">resolve</span><span class="p">()}</span>
+    <span class="n">notebooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">notebook</span><span class="p">,</span>
+            <span class="s2">&quot;first_commit_secs&quot;</span><span class="p">:</span> <span class="n">commit_times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;last_commit_secs&quot;</span><span class="p">:</span> <span class="n">commit_times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">notebook</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="n">notebooks</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">notebooks</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">])</span>
+</pre></div>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>_notebooks/nbs-to-website.ipynb
+_notebooks/testnb.ipynb
+</pre></div>
+</div></div><br><div class="code"><div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">notebook</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">notebooks</span><span class="p">):</span>
+    <span class="n">post_dir</span> <span class="o">=</span> <span class="n">mkdir</span><span class="p">(</span><span class="n">posts</span> <span class="o">/</span> <span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
     <span class="p">(</span><span class="n">post_dir</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;!DOCTYPE html&gt;</span>
@@ -292,14 +319,25 @@ posts/
 <span class="s2">    </span><span class="si">{</span><span class="n">mathjax</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/head&gt;</span>
 <span class="s2">  &lt;body&gt;</span>
-<span class="s2">    </span><span class="si">{</span><span class="n">nb_to_html</span><span class="p">(</span><span class="n">notebook</span><span class="p">,</span> <span class="n">post_dir</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">    &lt;p style=&quot;font-family:monospace&quot;&gt;</span>
+<span class="s2">      first commit: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span>
+<span class="s2">      ---</span>
+<span class="s2">      latest commit: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;last_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">    &lt;/p&gt;</span>
+<span class="s2">    </span><span class="si">{</span><span class="n">nb_to_html</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">],</span> <span class="n">post_dir</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">  &lt;/body&gt;</span>
 <span class="s2">&lt;/html&gt;</span>
 <span class="s2">    &quot;&quot;&quot;</span>
     <span class="p">)</span>
-    <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post_dir</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+    <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post_dir</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">WEBSITE_DIR</span><span class="p">))</span>
 
-<span class="n">links</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;./</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&lt;/a&gt;&lt;/li&gt;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">links</span><span class="p">)</span>
+<span class="n">_links</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">link</span><span class="p">,</span> <span class="n">nb</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">links</span><span class="p">,</span> <span class="n">notebooks</span><span class="p">):</span>
+    <span class="n">_links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;./</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="s2">&quot;last_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> &lt;/a&gt;&lt;/li&gt;&#39;</span>
+    <span class="p">)</span>
+
+<span class="n">links</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_links</span><span class="p">)</span>
 <span class="n">home_style</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">body {</span>
 <span class="s2">  margin: auto;</span>
@@ -308,7 +346,7 @@ posts/
 <span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+<span class="p">(</span><span class="n">WEBSITE_DIR</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
     <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;!DOCTYPE html&gt;</span>
 <span class="s2">&lt;html lang=&quot;en&quot;&gt;</span>
@@ -320,7 +358,7 @@ posts/
 <span class="s2">    &lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;</span>
 <span class="s2">  &lt;/head&gt;</span>
 <span class="s2">  &lt;body&gt;</span>
-<span class="s2">    &lt;h1&gt;Sid&#39;s site&lt;/h1&gt;</span>
+<span class="s2">    &lt;h1&gt;sid&#39;s site&lt;/h1&gt;</span>
 <span class="s2">    &lt;h2&gt;Posts&lt;/h2&gt;</span>
 <span class="s2">    &lt;ul&gt;</span><span class="si">{</span><span class="n">links</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
 <span class="s2">  &lt;/body&gt;</span>
@@ -329,9 +367,7 @@ posts/
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
-</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>100%|██████████| 2/2 [00:00&lt;00:00, 92.89it/s]
-</pre></div>
-</div></div><br></div>
+</div><br></div>
   </body>
 </html>
     
