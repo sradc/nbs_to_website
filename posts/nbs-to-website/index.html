@@ -34,7 +34,6 @@ MathJax.Hub.Config({
   </head>
   <header>
      <p style="font-family:monospace">
-      <br>
       first commit: 2022-05-29 
       <br>
       last commit: 2022-06-25
@@ -219,7 +218,7 @@ tqdm=4.62.3
 <span class="n">style</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">html_formatter</span><span class="o">.</span><span class="n">get_style_defs</span><span class="p">(</span><span class="s2">&quot;.highlight&quot;</span><span class="p">)</span>
     <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">.code, .markdown, .outputs, header {</span>
+<span class="s2">.code, .markdown, .outputs {</span>
 <span class="s2">  margin: auto;</span>
 <span class="s2">  padding: 4px 4px 4px 8px;</span>
 <span class="s2">  box-sizing: border-box;</span>
@@ -227,7 +226,7 @@ tqdm=4.62.3
 <span class="s2">.markdown {</span>
 <span class="s2">  max-width: 600px;</span>
 <span class="s2">}</span>
-<span class="s2">.code, .outputs, header {</span>
+<span class="s2">.code, .outputs {</span>
 <span class="s2">  max-width: 720px;</span>
 <span class="s2">  overflow: auto;</span>
 <span class="s2">}</span>
@@ -259,8 +258,13 @@ tqdm=4.62.3
 <span class="s2">a:hover {</span>
 <span class="s2">  text-decoration: underline;</span>
 <span class="s2">}</span>
-<span class="s2">ul {</span>
-<span class="s2">  padding: 4px 4px 4px 8px;</span>
+<span class="s2">header, header * {</span>
+<span class="s2">  padding: 0;</span>
+<span class="s2">  margin: 0;</span>
+<span class="s2">  vertical-align: top;</span>
+<span class="s2">}</span>
+<span class="s2">ul, li {</span>
+<span class="s2">  padding: 8px 4px 4px 8px;</span>
 <span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
@@ -335,7 +339,6 @@ _notebooks/nbs-to-website.ipynb
 <span class="s2">  &lt;/head&gt;</span>
 <span class="s2">  &lt;header&gt;</span>
 <span class="s2">     &lt;p style=&quot;font-family:monospace&quot;&gt;</span>
-<span class="s2">      &lt;br&gt;</span>
 <span class="s2">      first commit: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;first_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span>
 <span class="s2">      &lt;br&gt;</span>
 <span class="s2">      last commit: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">notebook</span><span class="p">[</span><span class="s2">&quot;last_commit_secs&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>

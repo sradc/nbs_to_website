@@ -72,7 +72,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
-.code, .markdown, .outputs, header {
+.code, .markdown, .outputs {
   margin: auto;
   padding: 4px 4px 4px 8px;
   box-sizing: border-box;
@@ -80,7 +80,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .markdown {
   max-width: 600px;
 }
-.code, .outputs, header {
+.code, .outputs {
   max-width: 720px;
   overflow: auto;
 }
@@ -112,6 +112,11 @@ a {
 a:hover {
   text-decoration: underline;
 }
-ul {
-  padding: 4px 4px 4px 8px;
+header, header * {
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
+}
+ul, li {
+  padding: 8px 4px 4px 8px;
 }
