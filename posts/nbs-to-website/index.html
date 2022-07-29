@@ -38,46 +38,41 @@ MathJax.Hub.Config({
       <br>
       first commit: 2022-05-29 
       <br>
-      last commit: &nbsp;2022-06-26
+      last commit: &nbsp;2022-07-29
     </p>
   </header>
   <body>
-    <div class="notebook"><div class="markdown"><h1>This Jupyter Notebook generates this website.</h1>
-</div><br><div class="markdown"><p>I wanted to be able to generate my website from a collection of Jupyter Notebooks.
-I thought it would be fun if the site was generated from one of its own notebooks.
-This is that notebook.</p>
-<p>... Although, probably not worth reading this, unless you're interested in a cobbled together thing that just about gets the job done.</p>
+    <div class="notebook"><div class="markdown"><h1 id="this-jupyter-notebook-generates-this-website.">This Jupyter
+Notebook generates this website.</h1>
+</div><br><div class="markdown"><p>I wanted to be able to generate my website from a collection of
+Jupyter Notebooks. I thought it would be fun if the site was generated
+from one of its own notebooks. This is that notebook.</p>
+<p>… Although, probably not worth reading this, unless you’re interested
+in a cobbled together thing that just about gets the job done.</p>
 <p>My workflow has been to make changes here, then run:</p>
-<pre><code class="language-bash">bash _scripts/build-site.sh &amp;&amp; python -m http.server
-</code></pre>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> _scripts/build-site.sh <span class="kw">&amp;&amp;</span> <span class="ex">python</span> <span class="at">-m</span> http.server</span></code></pre></div>
 <p>Which runs this notebook as a script, then serves the result.</p>
-<p>There's also a few git hooks in <code>_git_hooks</code>.</p>
-<p>Some things this notebook does:</p>
-<ul>
-<li>Parse the Jupyter Notebooks.</li>
-<li>Get the text content of markdown/code cells.</li>
-<li>Get the text output or image output of cells.</li>
-<li>Enable &quot;cell parameters&quot;, e.g. for flagging when to hide cells, etc.</li>
-<li>Generate html</li>
-<li>Use <code>pygments</code> to convert code to highlighted html</li>
-<li>Use <code>marko</code> to convert the markdown to html</li>
-<li>Convert the base64 string images into images, to enable caching/faster page loading.</li>
-<li>Generates style/homepage/...</li>
-</ul>
+<p>There’s also a few git hooks in <code>_git_hooks</code>.</p>
+<p>Some things this notebook does: - Parse the Jupyter Notebooks. - Get
+the text content of markdown/code cells. - Get the text output or image
+output of cells. - Enable “cell parameters”, e.g. for flagging when to
+hide cells, etc. - Generate html - Use <code>pygments</code> to convert
+code to highlighted html - Use <code>marko</code> to convert the
+markdown to html - Convert the base64 string images into images, to
+enable caching/faster page loading. - Generates style/homepage/…</p>
 <p>Requirements:</p>
 <pre><code>markdown=3.3.6
 pygments=2.11.2
-tqdm=4.62.3
-</code></pre>
+tqdm=4.62.3</code></pre>
 </div><br><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
 
-<span class="kn">from</span> <span class="nn">marko</span> <span class="kn">import</span> <span class="n">convert</span> <span class="k">as</span> <span class="n">markdown</span>
+<span class="kn">from</span> <span class="nn">plumbum.cmd</span> <span class="kn">import</span> <span class="n">cmark</span><span class="p">,</span> <span class="n">pandoc</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">formatters</span><span class="p">,</span> <span class="n">lexers</span><span class="p">,</span> <span class="n">highlight</span>
 <span class="kn">from</span> <span class="nn">pygments.styles</span> <span class="kn">import</span> <span class="n">STYLE_MAP</span>
@@ -105,8 +100,9 @@ tqdm=4.62.3
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>WEBSITE_DIR = PosixPath(&#39;/Users/sidneyradcliffe/repos/nbs-to-website&#39;)
 </pre></div>
-</div></div><br><div class="markdown"><h3>Cell parameters</h3>
-<p>Make it possible to put parameters in the Jupyter Notebook cells, that can be looked at when building the website.</p>
+</div></div><br><div class="markdown"><h3 id="cell-parameters">Cell parameters</h3>
+<p>Make it possible to put parameters in the Jupyter Notebook cells,
+that can be looked at when building the website.</p>
 </div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cell_flag</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get parameters in Jupyter cells, that are comments in the form:</span>
 
@@ -138,7 +134,7 @@ tqdm=4.62.3
 </pre></div>
 </div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>{&#39;my_flag&#39;: True, &#39;my_key&#39;: &#39;my_value&#39;, &#39;foo&#39;: &#39;bar&#39;}
 </pre></div>
-</div></div><br><div class="markdown"><h3>Parsing the notebook</h3>
+</div></div><br><div class="markdown"><h3 id="parsing-the-notebook">Parsing the notebook</h3>
 </div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nb_to_html</span><span class="p">(</span><span class="n">nb_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">post_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">nb_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">nb_path</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
     <span class="n">cells_as_html</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell_to_html</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">post_dir</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">])</span>
@@ -152,7 +148,9 @@ tqdm=4.62.3
     <span class="k">if</span> <span class="ow">not</span> <span class="n">content</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;cell_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;markdown&quot;</span><span class="p">:</span>
-        <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;markdown&quot;&gt;</span><span class="si">{</span><span class="n">markdown</span><span class="p">(</span><span class="n">content</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span>
+        <span class="c1"># mdtext = (cmark[&quot;--unsafe&quot;] &lt;&lt; content)()  # installed cmark via brew</span>
+        <span class="n">mdtext</span> <span class="o">=</span> <span class="p">(</span><span class="n">pandoc</span><span class="p">[</span><span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">content</span><span class="p">)()</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;markdown&quot;&gt;</span><span class="si">{</span><span class="n">mdtext</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;cell_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;code&quot;</span><span class="p">:</span>
         <span class="n">html</span> <span class="o">=</span> <span class="p">(</span>
@@ -228,17 +226,20 @@ tqdm=4.62.3
 <span class="s2">.markdown {</span>
 <span class="s2">  max-width: 600px;</span>
 <span class="s2">}</span>
-<span class="s2">.code, .outputs {</span>
+<span class="s2">.code {</span>
 <span class="s2">  max-width: 720px;</span>
 <span class="s2">  overflow: auto;</span>
-<span class="s2">}</span>
-<span class="s2">.code {</span>
 <span class="s2">  background-color: #F8F8F8;</span>
 <span class="s2">  /*box-shadow: inset 3px 3px 4px 3px #F0F0F0;*/</span>
 <span class="s2">}</span>
 <span class="s2">.outputs {</span>
-<span class="s2">  box-shadow: inset 4px -4px 0px #F0F0F0;</span>
+<span class="s2">  /*box-shadow: inset 4px -4px 0px #F0F0F0;*/</span>
 <span class="s2">  border: 6px solid #F8F8F8;</span>
+<span class="s2">  max-width: 1000px;</span>
+<span class="s2">  width: 100vw;</span>
+<span class="s2">  position: relative;</span>
+<span class="s2">  left: calc(-50vw + 50%);</span>
+<span class="s2">  overflow: auto;</span>
 <span class="s2">}</span>
 <span class="s2">.notebook {</span>
 <span class="s2">  font-family: sans-serif;</span>
@@ -253,6 +254,9 @@ tqdm=4.62.3
 <span class="s2">.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {</span>
 <span class="s2">    overflow-x: auto;</span>
 <span class="s2">    overflow-y: hidden;</span>
+<span class="s2">    width: 100vw;</span>
+<span class="s2">    position: relative;</span>
+<span class="s2">    left: calc(-50vw + 50%);</span>
 <span class="s2">}</span>
 <span class="s2">a {</span>
 <span class="s2">  text-decoration: none;</span>
@@ -272,7 +276,7 @@ tqdm=4.62.3
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 </pre></div>
-</div><br><div class="markdown"><h3>Site directory structure:</h3>
+</div><br><div class="markdown"><h3 id="site-directory-structure">Site directory structure:</h3>
 <pre><code>index.html
 stylesheet.css
 script.js
@@ -283,11 +287,10 @@ posts/
         image_2.jpg
     notebook_2/
         index.html
-        image_1.jpg
-</code></pre>
+        image_1.jpg</code></pre>
 <p>To serve:</p>
-<pre><code class="language-bash">python -m http.server
-</code></pre>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> http.server</span></code></pre></div>
 </div><br><div class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">path</span>
@@ -309,7 +312,7 @@ posts/
 <span class="k">for</span> <span class="n">notebook</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">nb_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">)):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">notebook</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">WEBSITE_DIR</span><span class="p">))</span>
     <span class="c1"># !git log -1 --format=%ct ../{notebook.relative_to(WEBSITE_DIR)}</span>
-    <span class="n">commit_times</span> <span class="o">=</span> <span class="err">!</span><span class="n">git</span> <span class="n">log</span> <span class="o">--</span><span class="nb">format</span><span class="o">=%</span><span class="n">ct</span> <span class="p">{</span><span class="n">notebook</span><span class="o">.</span><span class="n">resolve</span><span class="p">()}</span>
+    <span class="n">commit_times</span> <span class="o">=</span> <span class="err">!</span><span class="n">git</span> <span class="n">log</span> <span class="o">--</span><span class="nb">format</span><span class="o">=%</span><span class="n">at</span> <span class="p">{</span><span class="n">notebook</span><span class="o">.</span><span class="n">resolve</span><span class="p">()}</span>
     <span class="n">notebooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">notebook</span><span class="p">,</span>

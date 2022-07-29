@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test page</title>
+    <link rel="stylesheet" href="../../stylesheet.css">
+    <script src="../../script.js"></script>
+    
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- MathJax configuration -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ],
+        displayMath: [ ['$$','$$'], ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true }
+    }
+});
+</script>
+
+  </head>
+  <header>
+     <p style="font-family:monospace">
+      <a href="../..">&lt; Home &gt;</a>
+      <br>
+      first commit: 2021-04-29 
+      <br>
+      last commit: &nbsp;2021-04-29
+    </p>
+  </header>
+  <body>
+    <div class="notebook"><div class="markdown"><p>[2021-04-29 13:20 Now out of date compared to website]</p>
+<p>This post should answer the question: “Can neural networks learn the
+Fourier transform?”</p>
+<p>We can consider the the discrete Fourier transform (DFT) to be an
+artificial neural network: it is a single layer network, with no bias,
+no activation function, and particular values for the weights. The
+number of output nodes is equal to the number of frequencies we
+evaluate.</p>
+<p>Here is the DFT:</p>
+<p><span class="math display">$$ y_k = \displaystyle \sum_{n=0}^{N-1}
+x_n \cdot \exp(-i\frac{2 \pi k}{N}n) \tag{1} $$</span></p>
+<p>Where <span class="math inline"><em>k</em></span> is the number of
+cycles per <span class="math inline"><em>N</em></span> samples, <span
+class="math inline"><em>x</em><sub><em>n</em></sub></span> is the
+signal’s value at sample <span class="math inline"><em>n</em></span>,
+and <span class="math inline"><em>N</em></span> is the length of the
+signal.</p>
+<p>(Fourier overview: any signal can be written as the sum of sinusoids.
+<span class="math inline"><em>y</em><sub><em>k</em></sub></span> is a
+complex value that gives us information about the sinusoid of frequency
+<span class="math inline"><em>k</em></span> in signal <span
+class="math inline"><strong>x</strong></span>. From <span
+class="math inline"><em>y</em><sub><em>k</em></sub></span> we can
+compute the amplitude and phase (i.e. location) of the sinusoid.)</p>
+<p>We can rewrite (1) using matrix multiplication:</p>
+<p><span class="math display">$$ y_k = [x_0, x_1,... x_{N-1}]
+\begin{bmatrix}
+    \exp(0)\\
+    \exp(-i\frac{2 \pi k}{N})\\
+    \exp(-i\frac{2 \pi k}{N}2)\\
+    \exp(-i\frac{2 \pi k}{N}3)\\
+    \exp(-i\frac{2 \pi k}{N}4)\\
+    \vdots \\
+    \exp(-i\frac{2 \pi k}{N}(N-1))
+\end{bmatrix}
+$$</span></p>
+<p>This gives us the Fourier value for a particular <span
+class="math inline"><em>k</em></span>. However, we most commonly want to
+compute the full frequency spectrum, i.e. values of <span
+class="math inline"><em>k</em></span> from <span
+class="math inline">[0,1,...<em>N</em>−1]</span>. We can use a matrix
+for this (<span class="math inline"><em>k</em></span> is incremented
+column-wise, and <span class="math inline"><em>n</em></span>
+row-wise):</p>
+<p><span class="math display">$$ [y_0... y_{N-1}] = [x_0... x_{N-1}]
+\begin{bmatrix}
+    \exp(0)     &amp; \exp(0)                     &amp;
+\exp(0)                      &amp; \dots  &amp; \exp(0) \\
+    \exp(0)     &amp; \exp(-i\frac{2\pi}{N})      &amp;
+\exp(-i\frac{2\pi2}{N})      &amp; \dots  &amp;
+\exp(-i\frac{2\pi(N-1)}{N}) \\
+    \exp(0)     &amp; \exp(-i\frac{2\pi}{N}2)     &amp;
+\exp(-i\frac{2\pi2}{N}2)     &amp; \dots  &amp;
+\exp(-i\frac{2\pi(N-1)}{N}2)\\
+    \exp(0)     &amp; \exp(-i\frac{2\pi}{N}3)     &amp;
+\exp(-i\frac{2\pi2}{N}3)     &amp; \dots  &amp;
+\exp(-i\frac{2\pi(N-1)}{N}3)\\
+    \vdots      &amp; \vdots                      &amp;
+\vdots                       &amp;        &amp; \vdots \\
+    \exp(0)     &amp; \exp(-i\frac{2\pi}{N}(N-1)) &amp;
+\exp(-i\frac{2\pi2}{N}(N-1)) &amp; \dots  &amp;
+\exp(-i\frac{2\pi(N-1)}{N}(N-1))
+\end{bmatrix}
+$$</span></p>
+<p>More concisely:</p>
+<p><span
+class="math display"><strong>y</strong> = <strong>x</strong><em>W</em><sub><em>C</em><em>o</em><em>m</em><em>p</em><em>l</em><em>e</em><em>x</em><em>F</em><em>o</em><em>u</em><em>r</em><em>i</em><em>e</em><em>r</em></sub></span></p>
+<p>This should look familiar, because it is a neural network layer with
+no activation function and no bias. The matrix of exponentials contains
+our weights, which we’ll call “complex Fourier weights”. Usually we
+don’t know the weights of our neural networks in advance, but in this
+case we do.</p>
+<h3 id="non-complex">Non-complex</h3>
+<p>However, we typically don’t use complex numbers for neural networks.
+To fit in with this, we’ll double the size of our matrix. The left half
+will contain the real values, and the right half the imaginary
+values.</p>
+<p>Recall that:</p>
+<p><span
+class="math display"><em>e</em><sup>−<em>i</em><em>θ</em></sup> = <em>c</em><em>o</em><em>s</em>(<em>θ</em>) − <em>i</em><em>s</em><em>i</em><em>n</em>(<em>θ</em>)</span></p>
+<p>Substituting in $ = n $ from our DFT expression [1], we get:</p>
+<p><span class="math display">$$ \exp(-i \frac{2 \pi k}{N}n) =
+cos(\frac{2 \pi k}{N}n) - i sin(\frac{2 \pi k}{N}n) $$</span></p>
+<p>Then we use the real part (the <span
+class="math inline"><em>c</em><em>o</em><em>s</em></span> term) for the
+left half of our matrix, and the imaginary part (the <span
+class="math inline"><em>s</em><em>i</em><em>n</em></span> term) for the
+right half.</p>
+<p><span class="math display">$$ \boldsymbol{\hat{y}} = [x_0 ...
+x_{N-1}]
+\begin{bmatrix}
+    \cos(0)     &amp; \cos(0)                   &amp; \dots  &amp;
+\cos(0) &amp; -\sin(0) &amp; -\sin(0) &amp; \dots &amp; -\sin(0)\\
+    \cos(0)     &amp; \cos(\frac{2\pi}{N})      &amp; \dots  &amp;
+\cos(\frac{2\pi(N-1)}{N}) &amp; -\sin(0)     &amp;
+-\sin(\frac{2\pi}{N})      &amp; \dots &amp;
+-\sin(\frac{2\pi(N-1)}{N})\\
+    \cos(0)     &amp; \cos(\frac{2\pi}{N}2)     &amp; \dots  &amp;
+\cos(\frac{2\pi(N-1)}{N}2) &amp; -\sin(0)     &amp;
+-\sin(\frac{2\pi}{N}2)     &amp; \dots &amp;
+-\sin(\frac{2\pi(N-1)}{N}2)\\
+    \cos(0)     &amp; \cos(\frac{2\pi}{N}3)     &amp; \dots  &amp;
+\cos(\frac{2\pi(N-1)}{N}3) &amp; -\sin(0)     &amp;
+-\sin(\frac{2\pi}{N}3)     &amp; \dots &amp;
+-\sin(\frac{2\pi(N-1)}{N}3)\\
+    \vdots      &amp; \vdots                    &amp;        &amp;
+\vdots &amp; \vdots  &amp; \vdots                      &amp;       &amp;
+\vdots\\
+    \cos(0)     &amp; \cos(\frac{2\pi}{N}(N-1)) &amp; \dots  &amp;
+\cos(\frac{2\pi(N-1)}{N}(N-1)) &amp; -\sin(0)     &amp;
+-\sin(\frac{2\pi}{N}(N-1)) &amp; \dots &amp;
+-\sin(\frac{2\pi(N-1)}{N}(N-1))
+\end{bmatrix}
+$$</span></p>
+<p>More concisely:</p>
+<p><span
+class="math display"><strong>ŷ</strong> = <strong>x</strong><em>W</em><sub><em>F</em><em>o</em><em>u</em><em>r</em><em>i</em><em>e</em><em>r</em></sub></span></p>
+<p>We’ll call <span
+class="math inline"><em>W</em><sub><em>F</em><em>o</em><em>u</em><em>r</em><em>i</em><em>e</em><em>r</em></sub></span>,
+“Fourier weights”. Note that <span
+class="math inline"><strong>ŷ</strong></span> and <span
+class="math inline"><strong>y</strong></span> effectively contain the
+same information, but <span
+class="math inline"><strong>ŷ</strong></span> doesn’t use complex
+numbers, so it is twice as long. In other words, we could compute
+amplitudes and phases using either <span
+class="math inline"><em>W</em><sub><em>F</em><em>o</em><em>u</em><em>r</em><em>i</em><em>e</em><em>r</em></sub></span>
+or <span
+class="math inline"><em>W</em><sub><em>C</em><em>o</em><em>m</em><em>p</em><em>l</em><em>e</em><em>x</em><em>F</em><em>o</em><em>u</em><em>r</em><em>i</em><em>e</em><em>r</em></sub></span>,
+but we probably want to use <span
+class="math inline"><em>W</em><sub><em>F</em><em>o</em><em>u</em><em>r</em><em>i</em><em>e</em><em>r</em></sub></span>
+in order to avoid complex numbers.</p>
+<p>We are now equipped to add Fourier layers to our networks, if we so
+choose…</p>
+</div><br><div class="markdown"><h2 id="computing-the-fourier-transform-using-fourier-weights">Computing
+the Fourier transform using Fourier weights</h2>
+<p>Let’s implement the method shown above (non-complex, expression 3),
+and check it is correct using the fast Fourier transform.</p>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">def</span> <span class="nf">create_fourier_weights</span><span class="p">(</span><span class="n">signal_length</span><span class="p">):</span>
+    <span class="s2">&quot;Create weights, as described above.&quot;</span>
+    <span class="n">k_vals</span><span class="p">,</span> <span class="n">n_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">signal_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">signal_length</span><span class="p">]</span>
+    <span class="n">theta_vals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">k_vals</span> <span class="o">*</span> <span class="n">n_vals</span> <span class="o">/</span> <span class="n">signal_length</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta_vals</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta_vals</span><span class="p">)])</span>
+
+
+<span class="c1"># Generate data:</span>
+<span class="n">signal_length</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_length</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span>
+
+<span class="c1"># Compute Fourier transform using method described above:</span>
+<span class="n">W_fourier</span> <span class="o">=</span> <span class="n">create_fourier_weights</span><span class="p">(</span><span class="n">signal_length</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W_fourier</span><span class="p">)</span>
+
+<span class="c1"># Compute Fourier transform using the fast Fourier transform:</span>
+<span class="n">fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">y_fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">fft</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">fft</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span>
+
+<span class="c1"># Compare the results:</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rmse: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_fft</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+</pre></div>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>rmse:  1.5429611622665193e-14
+</pre></div>
+</div></div><br><div class="markdown"><p>The tiny error confirms that we are computing what we expect.</p>
+<p>Another way of checking is to reconstruct the signal:</p>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">y_real</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:,</span> <span class="p">:</span><span class="n">signal_length</span><span class="p">]</span>
+<span class="n">y_imag</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:,</span> <span class="n">signal_length</span><span class="p">:]</span>
+<span class="n">tvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">signal_length</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">signal_length</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">arg_vals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">tvals</span> <span class="o">*</span> <span class="n">freqs</span> <span class="o">/</span> <span class="n">signal_length</span>
+<span class="n">sinusoids</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_real</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_vals</span><span class="p">)</span> <span class="o">-</span> <span class="n">y_imag</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_vals</span><span class="p">))</span> <span class="o">/</span> <span class="n">signal_length</span>
+<span class="n">reconstructed_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sinusoids</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rmse:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">reconstructed_signal</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Original signal&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">reconstructed_signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Signal reconstructed from sinusoids after DFT&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>rmse: 2.3243522568191728e-15
+</pre></div>
+</div><img src="./86343.png" width="424" height="280" class="out_img"/></div><br><div class="markdown"><h2 id="learning-the-fourier-transform-via-gradient-descent">Learning
+the Fourier transform via gradient-descent</h2>
+<p>We don’t need to pre-compute the weights, like we did above, we can
+instead <em>learn them</em>.</p>
+<p>First, similarly to <a
+href="https://gist.github.com/endolith/98863221204541bf017b6cae71cb0a89">endolith
+(GitHub Gist)</a>, we will use the FFT to train a network to carry out
+the DFT:</p>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="n">signal_length</span> <span class="o">=</span> <span class="mi">32</span>
+
+<span class="c1"># Initialise weight vector to train:</span>
+<span class="n">W_learned</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">signal_length</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">signal_length</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Expected weights, for comparison:</span>
+<span class="n">W_expected</span> <span class="o">=</span> <span class="n">create_fourier_weights</span><span class="p">(</span><span class="n">signal_length</span><span class="p">)</span>
+
+<span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">rmses</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="c1"># Generate a random signal each iteration:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_length</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span>
+
+    <span class="c1"># Compute the expected result using the FFT:</span>
+    <span class="n">fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">fft</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">fft</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span>
+
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W_learned</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y_pred</span> <span class="o">-</span> <span class="n">y_true</span><span class="p">))</span>
+
+    <span class="c1"># Train weights, via gradient descent:</span>
+    <span class="n">W_gradient</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">W_learned</span><span class="p">)</span>
+    <span class="n">W_learned</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">W_learned</span> <span class="o">-</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">W_gradient</span><span class="p">)</span>
+
+    <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+    <span class="n">rmses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">W_learned</span> <span class="o">-</span> <span class="n">W_expected</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+</pre></div>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final loss value&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">losses</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final weights&#39; rmse value&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rmses</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss value&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iterations&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rmses</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Learned weights vs expected weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;RMSE&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iterations&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Expected Fourier weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">W_expected</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Learned weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">W_learned</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>Final loss value 1.6738563548424711e-09
+Final weights&#39; rmse value 3.1525832404710523e-06
+</pre></div>
+</div><img src="./5e39b.png" width="711" height="280" class="out_img"/><img src="./d89c9.png" width="856" height="245" class="out_img"/></div><br><div class="markdown"><p>This confirms that neural networks are capable of learning the
+discrete Fourier transform. However, this example is contrived - if we
+are going to train a single layer to learn the Fourier transform, we
+might as well use <code>create_fourier_weights</code> directly (or
+tf.signal.fft, etc.).</p>
+</div><br><div class="markdown"><h2
+id="learning-the-fourier-transform-via-a-fourier-autoencoder">Learning
+the Fourier transform via a Fourier autoencoder</h2>
+<p>We used the FFT above, to teach the network to perform the Fourier
+transform. Let’s not use it anymore, and instead learn the DFT
+autoencoder-style.</p>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="n">W_learned</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">signal_length</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">signal_length</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">tvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">signal_length</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">signal_length</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">arg_vals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">tvals</span> <span class="o">*</span> <span class="n">freqs</span> <span class="o">/</span> <span class="n">signal_length</span>
+<span class="n">cos_vals</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_vals</span><span class="p">)</span> <span class="o">/</span> <span class="n">signal_length</span>
+<span class="n">sin_vals</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_vals</span><span class="p">)</span> <span class="o">/</span> <span class="n">signal_length</span>
+
+<span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">rmses</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_length</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span>
+
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W_learned</span><span class="p">)</span>
+        <span class="n">y_real</span> <span class="o">=</span> <span class="n">y_pred</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">signal_length</span><span class="p">]</span>
+        <span class="n">y_imag</span> <span class="o">=</span> <span class="n">y_pred</span><span class="p">[:,</span> <span class="n">signal_length</span><span class="p">:]</span>
+        <span class="n">sinusoids</span> <span class="o">=</span> <span class="n">y_real</span> <span class="o">*</span> <span class="n">cos_vals</span> <span class="o">-</span> <span class="n">y_imag</span> <span class="o">*</span> <span class="n">sin_vals</span>
+        <span class="n">reconstructed_signal</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">sinusoids</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">reconstructed_signal</span><span class="p">))</span>
+
+    <span class="n">W_gradient</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">W_learned</span><span class="p">)</span>
+    <span class="n">W_learned</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">W_learned</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">W_gradient</span><span class="p">)</span>
+
+    <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+    <span class="n">rmses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">W_learned</span> <span class="o">-</span> <span class="n">W_expected</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+</pre></div>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final loss value&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">losses</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final weights&#39; rmse value&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rmses</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss value&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iterations&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rmses</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Learned weights vs expected weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;RMSE&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iterations&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Expected Fourier weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">W_expected</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Learned weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">W_learned</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Original signal&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Signal reconstructed from sinusoids&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">reconstructed_signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>Final loss value 4.161919455121241e-22
+Final weights&#39; rmse value 0.20243339269590094
+</pre></div>
+</div><img src="./53b0f.png" width="710" height="280" class="out_img"/><img src="./78763.png" width="856" height="245" class="out_img"/><img src="./16355.png" width="352" height="352" class="out_img"/></div><br><div class="markdown"><p>And we pretty much learn the Fourier transform. The learned weights
+don’t get as close to the Fourier weights as they did in the example
+above, but the reconstructed signals are perfect.</p>
+<h2 id="fourier-autoencoder-amplitude-phase-reconstruction">Fourier
+autoencoder, amplitude + phase reconstruction</h2>
+<p>Let’s do the same as above, but explicitly using amplitude and
+phase.</p>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="n">W_learned</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">signal_length</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">signal_length</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">rmses</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_length</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span>
+
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W_learned</span><span class="p">)</span>
+        <span class="n">y_real</span> <span class="o">=</span> <span class="n">y_pred</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">signal_length</span><span class="p">]</span>
+        <span class="n">y_imag</span> <span class="o">=</span> <span class="n">y_pred</span><span class="p">[:,</span> <span class="n">signal_length</span><span class="p">:]</span>
+        <span class="n">amplitudes</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">y_real</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_imag</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">signal_length</span>
+        <span class="n">phases</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y_imag</span><span class="p">,</span> <span class="n">y_real</span><span class="p">)</span>
+        <span class="n">sinusoids</span> <span class="o">=</span> <span class="n">amplitudes</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_vals</span> <span class="o">+</span> <span class="n">phases</span><span class="p">)</span>
+        <span class="n">reconstructed_signal</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">sinusoids</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">reconstructed_signal</span><span class="p">))</span>
+
+    <span class="n">W_gradient</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">W_learned</span><span class="p">)</span>
+    <span class="n">W_learned</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">W_learned</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">W_gradient</span><span class="p">)</span>
+
+    <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+    <span class="n">rmses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">W_learned</span> <span class="o">-</span> <span class="n">W_expected</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+</pre></div>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final loss value&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">losses</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final weights&#39; rmse value&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rmses</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss value&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iterations&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rmses</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Learned weights vs expected weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;RMSE&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iterations&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Expected Fourier weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">W_expected</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Learned Fourier weights&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">W_learned</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Original signal&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Reconstructed signal&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">reconstructed_signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div><div class="outputs"><div class="outtext"><div class="highlight"><pre><span></span>Final loss value 2.2379359316633115e-21
+Final weights&#39; rmse value 0.2080118219691059
+</pre></div>
+</div><img src="./adde7.png" width="710" height="280" class="out_img"/><img src="./2dc3a.png" width="856" height="245" class="out_img"/><img src="./751e6.png" width="352" height="352" class="out_img"/></div><br><div class="markdown"><p>Once again we get perfect reconstructions, so we know that the
+amplitudes and phases must be accurate. However, as before, the learned
+weights aren’t exactly the same as the Fourier weights (but pretty
+close). So we can surmise that there is some flexibility in the weights
+that result in the Fourier transform, and that gradient descent takes us
+to a local optimum.</p>
+</div><br><div class="markdown"><p>So, to conclude: yes, neural networks can learn the Fourier
+transform.</p>
+<p>And this post leaves unaddressed the questions:</p>
+<ul>
+<li>What is the explanation for the flexibility in the weights? How much
+flexibility is there?</li>
+<li>Do we ever benefit from explicitly putting Fourier layers into our
+models? Or are we better off using good architectures and assuming the
+model will learn what it needs to?</li>
+</ul>
+<h3 id="references">References</h3>
+<p>https://en.wikipedia.org/wiki/Discrete_Fourier_transform</p>
+<p>Training neural network to implement discrete Fourier transform
+(DFT/FFT) - 2018 -
+https://gist.github.com/endolith/98863221204541bf017b6cae71cb0a89</p>
+<p>Discrete Fourier Transform Computation Using Neural Networks - 2008 -
+https://publik.tuwien.ac.at/files/PubDat_171587.pdf</p>
+</div></div>
+  </body>
+</html>
+    
