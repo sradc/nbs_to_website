@@ -73,45 +73,41 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
 .code, .markdown, .outputs {
+  box-sizing: border-box;
   margin: auto;
   padding: 4px 4px 4px 8px;
-  box-sizing: border-box;
 }
 .markdown {
   max-width: 600px;
 }
 .code {
+  background-color: #F8F8F8;
   max-width: 720px;
   overflow: auto;
-  background-color: #F8F8F8;
-  /*box-shadow: inset 3px 3px 4px 3px #F0F0F0;*/
 }
 .outputs {
-  /*box-shadow: inset 4px -4px 0px #F0F0F0;*/
   border: 6px solid #F8F8F8;
-  max-width: 1000px;
-  width: 100vw;
-  position: relative;
-  left: calc(-50vw + 50%);
+  max-width: 720px;
   overflow: auto;
 }
-.notebook {
+/*.notebook {
   font-family: sans-serif;
-}
+}*/
 .code *, .outputs *, code {
-  font-family: monospace;
   background-color: rgba(0,0,0,0);
+  font-family: monospace;
 }
 code, .markdown pre {  
   overflow: auto;
 }
-.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
+/*.MJX-TEX, .MJXc-display, .MathJax_SVG_Display {
+    left: calc(-50vw + 50%);
     overflow-x: auto;
     overflow-y: hidden;
-    width: 100vw;
     position: relative;
-    left: calc(-50vw + 50%);
-}
+    width: 100vw;
+    padding: 4px 4px 4px 8px;
+}*/
 a {
   text-decoration: none;
 }

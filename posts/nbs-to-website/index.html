@@ -8,27 +8,18 @@
     <link rel="stylesheet" href="../../stylesheet.css">
     <script src="../../script.js"></script>
     
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+<script>
+MathJax = {
+  chtml: {
+  },
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']]
+  }
+};
 </script>
 
-<!-- MathJax configuration -->
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-    tex2jax: {
-        inlineMath: [ ['$','$'], ],
-        displayMath: [ ['$$','$$'], ],
-        processEscapes: true,
-        processEnvironments: true
-    },
-    // Center justify equations in code and markdown cells. Elsewhere
-    // we use CSS to left justify single line equations in code cells.
-    displayAlign: 'center',
-    "HTML-CSS": {
-        styles: {'.MathJax_Display': {"margin": 0}},
-        linebreaks: { automatic: true }
-    }
-});
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
   </head>
@@ -190,28 +181,46 @@ that can be looked at when building the website.</p>
                 <span class="k">pass</span>
     <span class="k">return</span> <span class="n">result</span>
 </pre></div>
-</div><br><div class="code"><div class="highlight"><pre><span></span><span class="n">mathjax</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">&lt;script type=&quot;text/javascript&quot; async</span>
-<span class="s2">  src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;</span>
+</div><br><div class="code"><div class="highlight"><pre><span></span><span class="c1"># mathjax = &quot;&quot;&quot;</span>
+<span class="c1"># &lt;script type=&quot;text/javascript&quot; async</span>
+<span class="c1">#   src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;</span>
+<span class="c1"># &lt;/script&gt;</span>
+
+<span class="c1"># &lt;!-- MathJax configuration --&gt;</span>
+<span class="c1"># &lt;script type=&quot;text/x-mathjax-config&quot;&gt;</span>
+<span class="c1"># MathJax.Hub.Config({</span>
+<span class="c1">#     tex2jax: {</span>
+<span class="c1">#         inlineMath: [ [&#39;$&#39;,&#39;$&#39;], ],</span>
+<span class="c1">#         displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], ],</span>
+<span class="c1">#         processEscapes: true,</span>
+<span class="c1">#         processEnvironments: true</span>
+<span class="c1">#     },</span>
+<span class="c1">#     // Center justify equations in code and markdown cells. Elsewhere</span>
+<span class="c1">#     // we use CSS to left justify single line equations in code cells.</span>
+<span class="c1">#     displayAlign: &#39;center&#39;,</span>
+<span class="c1">#     &quot;HTML-CSS&quot;: {</span>
+<span class="c1">#         styles: {&#39;.MathJax_Display&#39;: {&quot;margin&quot;: 0}},</span>
+<span class="c1">#         linebreaks: { automatic: true },</span>
+<span class="c1">#         fonts: [&quot;Gyre-Pagella&quot;],</span>
+<span class="c1">#         imageFont: null,</span>
+<span class="c1">#         undefinedFamily: &quot;&#39;Arial Unicode MS&#39;, cmbright&quot;</span>
+<span class="c1">#     }</span>
+<span class="c1"># });</span>
+<span class="c1"># &lt;/script&gt;</span>
+<span class="c1"># &quot;&quot;&quot;</span>
+<span class="n">mathjax</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">MathJax = {</span>
+<span class="s2">  chtml: {</span>
+<span class="s2">  },</span>
+<span class="s2">  tex: {</span>
+<span class="s2">    inlineMath: [[&#39;$&#39;, &#39;$&#39;], [&#39;</span><span class="se">\\</span><span class="s2">(&#39;, &#39;</span><span class="se">\\</span><span class="s2">)&#39;]]</span>
+<span class="s2">  }</span>
+<span class="s2">};</span>
 <span class="s2">&lt;/script&gt;</span>
 
-<span class="s2">&lt;!-- MathJax configuration --&gt;</span>
-<span class="s2">&lt;script type=&quot;text/x-mathjax-config&quot;&gt;</span>
-<span class="s2">MathJax.Hub.Config({</span>
-<span class="s2">    tex2jax: {</span>
-<span class="s2">        inlineMath: [ [&#39;$&#39;,&#39;$&#39;], ],</span>
-<span class="s2">        displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], ],</span>
-<span class="s2">        processEscapes: true,</span>
-<span class="s2">        processEnvironments: true</span>
-<span class="s2">    },</span>
-<span class="s2">    // Center justify equations in code and markdown cells. Elsewhere</span>
-<span class="s2">    // we use CSS to left justify single line equations in code cells.</span>
-<span class="s2">    displayAlign: &#39;center&#39;,</span>
-<span class="s2">    &quot;HTML-CSS&quot;: {</span>
-<span class="s2">        styles: {&#39;.MathJax_Display&#39;: {&quot;margin&quot;: 0}},</span>
-<span class="s2">        linebreaks: { automatic: true }</span>
-<span class="s2">    }</span>
-<span class="s2">});</span>
+<span class="s2">&lt;script type=&quot;text/javascript&quot; id=&quot;MathJax-script&quot; async</span>
+<span class="s2">  src=&quot;https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS-MML_HTMLorMML&quot;&gt;</span>
 <span class="s2">&lt;/script&gt;</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
@@ -219,45 +228,41 @@ that can be looked at when building the website.</p>
     <span class="n">html_formatter</span><span class="o">.</span><span class="n">get_style_defs</span><span class="p">(</span><span class="s2">&quot;.highlight&quot;</span><span class="p">)</span>
     <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">.code, .markdown, .outputs {</span>
+<span class="s2">  box-sizing: border-box;</span>
 <span class="s2">  margin: auto;</span>
 <span class="s2">  padding: 4px 4px 4px 8px;</span>
-<span class="s2">  box-sizing: border-box;</span>
 <span class="s2">}</span>
 <span class="s2">.markdown {</span>
 <span class="s2">  max-width: 600px;</span>
 <span class="s2">}</span>
 <span class="s2">.code {</span>
+<span class="s2">  background-color: #F8F8F8;</span>
 <span class="s2">  max-width: 720px;</span>
 <span class="s2">  overflow: auto;</span>
-<span class="s2">  background-color: #F8F8F8;</span>
-<span class="s2">  /*box-shadow: inset 3px 3px 4px 3px #F0F0F0;*/</span>
 <span class="s2">}</span>
 <span class="s2">.outputs {</span>
-<span class="s2">  /*box-shadow: inset 4px -4px 0px #F0F0F0;*/</span>
 <span class="s2">  border: 6px solid #F8F8F8;</span>
-<span class="s2">  max-width: 1000px;</span>
-<span class="s2">  width: 100vw;</span>
-<span class="s2">  position: relative;</span>
-<span class="s2">  left: calc(-50vw + 50%);</span>
+<span class="s2">  max-width: 720px;</span>
 <span class="s2">  overflow: auto;</span>
 <span class="s2">}</span>
-<span class="s2">.notebook {</span>
+<span class="s2">/*.notebook {</span>
 <span class="s2">  font-family: sans-serif;</span>
-<span class="s2">}</span>
+<span class="s2">}*/</span>
 <span class="s2">.code *, .outputs *, code {</span>
-<span class="s2">  font-family: monospace;</span>
 <span class="s2">  background-color: rgba(0,0,0,0);</span>
+<span class="s2">  font-family: monospace;</span>
 <span class="s2">}</span>
 <span class="s2">code, .markdown pre {  </span>
 <span class="s2">  overflow: auto;</span>
 <span class="s2">}</span>
-<span class="s2">.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {</span>
+<span class="s2">/*.MJX-TEX, .MJXc-display, .MathJax_SVG_Display {</span>
+<span class="s2">    left: calc(-50vw + 50%);</span>
 <span class="s2">    overflow-x: auto;</span>
 <span class="s2">    overflow-y: hidden;</span>
-<span class="s2">    width: 100vw;</span>
 <span class="s2">    position: relative;</span>
-<span class="s2">    left: calc(-50vw + 50%);</span>
-<span class="s2">}</span>
+<span class="s2">    width: 100vw;</span>
+<span class="s2">    padding: 4px 4px 4px 8px;</span>
+<span class="s2">}*/</span>
 <span class="s2">a {</span>
 <span class="s2">  text-decoration: none;</span>
 <span class="s2">}</span>
@@ -377,7 +382,6 @@ _notebooks/nbs-to-website.ipynb
 <span class="s2">body {</span>
 <span class="s2">  margin: auto;</span>
 <span class="s2">  max-width: 600px;</span>
-<span class="s2">  font-family: sans-serif;</span>
 <span class="s2">  padding: 4px 4px 4px 8px;</span>
 <span class="s2">}</span>
 <span class="s2">ul {</span>

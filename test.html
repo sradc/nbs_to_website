@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>title</title>
+
+    <script>
+        MathJax = {
+            chtml: {
+            },
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+
+</head>
+
+<body>
+
+    <p>This is some text.</p>
+
+    <p>Here is some inline maths. $x = 3 * 43$.</p>
+
+    <p>Here is some super maths.</p>
+
+    <p>
+        $$ x = 323 * 12 $$
+    </p>
+
+    <p>
+        $$ y = 1232 $$
+    </p>
+
+    $$ [y_0... y_{N-1}] = [x_0... x_{N-1}]
+\begin{bmatrix}
+    \exp(0)     & \exp(0)                     & \exp(0)                      & \dots  & \exp(0) \\
+    \exp(0)     & \exp(-i\frac{2\pi}{N})      & \exp(-i\frac{2\pi2}{N})      & \dots  & \exp(-i\frac{2\pi(N-1)}{N}) \\
+    \exp(0)     & \exp(-i\frac{2\pi}{N}2)     & \exp(-i\frac{2\pi2}{N}2)     & \dots  & \exp(-i\frac{2\pi(N-1)}{N}2)\\ 
+    \exp(0)     & \exp(-i\frac{2\pi}{N}3)     & \exp(-i\frac{2\pi2}{N}3)     & \dots  & \exp(-i\frac{2\pi(N-1)}{N}3)\\ 
+    \vdots      & \vdots                      & \vdots                       &        & \vdots \\
+    \exp(0)     & \exp(-i\frac{2\pi}{N}(N-1)) & \exp(-i\frac{2\pi2}{N}(N-1)) & \dots  & \exp(-i\frac{2\pi(N-1)}{N}(N-1))
+\end{bmatrix}
+$$ 
+
+    </p>
+
+
+    <p>
+        $$ \boldsymbol{y} = \boldsymbol{x} W_{Complex Fourier} \tag{2} $$
+    </p>
+
+    <p>U wot.</p>
+</body>
+
+<style>
+
+p {
+    font-family: sans-serif;
+}
+
+</style>
+
+</html>
